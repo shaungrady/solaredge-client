@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2018",
-    "module": "ES2015",
+    "module": "commonjs",
     "moduleResolution": "Node",
     "allowJs": true,
     "outDir": "./dist",

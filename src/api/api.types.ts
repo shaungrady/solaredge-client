@@ -1,8 +1,3 @@
-export interface List<T> {
-  count: number
-  list: T[]
-}
-
 export interface DateRangeParams {
   startDate: Date
   endDate: Date
@@ -34,7 +29,7 @@ export const enum TimeUnit {
   Year = 'YEAR',
 }
 
-export const enum Sort {
+export const enum SortOrder {
   Ascending = 'ASC',
   Descending = 'DESC',
 }

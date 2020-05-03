@@ -1,6 +1,6 @@
-import Axios from 'axios'
-
-import { recursivelyDeserializeDates } from '../helpers/date'
+import fetch from 'isomorphic-unfetch'
+import queryString from 'query-string'
+import { recursivelyDeserializeDates } from '../helpers/date.js'
 
 export default class SolaredgeApi {
   static readonly apiOrigin = 'https://monitoringapi.solaredge.com'
@@ -17,28 +17,32 @@ export default class SolaredgeApi {
     }
   }
 
-  // TODO: Drop Axios
-  protected callApi<T>(
+  protected async callApi<T>(
     path: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reqParams: Record<string, any> = {}
   ): Promise<T> {
     const { apiOrigin } = SolaredgeApi
     const { apiKey } = this
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    const params = { ...reqParams, api_key: apiKey }
 
-    return (
-      Axios.get<Record<string, T>>(apiOrigin + path, {
-        params,
-      })
-        // Unwrap data nested under top-level key
-        .then(({ data }) => data[Object.keys(data)[0]])
-        // Convert date strings to Dates
-        .then(recursivelyDeserializeDates)
-        .catch((err) => {
-          throw Error(err)
-        })
-    )
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    const params: string = queryString.stringify({
+      ...reqParams,
+      api_key: apiKey,
+    })
+    const url = `${apiOrigin}${path}?${params}`
+    const headers: Record<string, string> = { Accept: 'application/json' }
+
+    console.debug('Calling API:', url)
+
+    const res = await fetch(url, { headers })
+    const body = await res.json()
+
+    // Solaredge nests response data under a key that changes depending on the
+    // request endpoint; this removes that nesting for ease of use.
+    const bodyValues = Object.values(body)
+    const data: T = bodyValues.length === 1 ? bodyValues[0] : body
+
+    return recursivelyDeserializeDates(data)
   }
 }

@@ -3,7 +3,7 @@ import {
   DateTimeRangeParams,
   Meter,
   TimeUnit,
-} from '../api.types'
+} from '../api.types.js'
 
 export interface SiteDetails {
   id: number

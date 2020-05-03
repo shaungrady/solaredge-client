@@ -9,13 +9,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "assert-never": "^1.2.0",
-    "axios": "^0.19.2",
-    "date-fns": "^2.12.0",
-    "date-fns-timezone": "^0.1.4",
-    "traverse": "^0.6.6"
+    "assert-never": "1.2.0",
+    "date-fns": "2.12.0",
+    "date-fns-timezone": "0.1.4",
+    "isomorphic-unfetch": "3.0.0",
+    "query-string": "6.12.1",
+    "traverse": "0.6.6"
   },
   "devDependencies": {
+    "@types/query-string": "^6.3.0",
     "@types/traverse": "^0.6.32",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",

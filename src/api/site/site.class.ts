@@ -5,8 +5,8 @@ import {
   DateTimeRangeParams,
   TimeUnit,
   TimeUnitParam,
-} from '../api.types'
-import { serializeDateOrTimeRange } from '../../helpers/date'
+} from '../api.types.js'
+import { serializeDateOrTimeRange } from '../../helpers/date.js'
 import {
   SiteDataPeriod,
   SiteDetails,
@@ -15,7 +15,7 @@ import {
   SiteMeasurementGeneratorConfig,
   SiteMeasurements,
 } from './site.types'
-import SolaredgeApi from '../api.class'
+import SolaredgeApi from '../api.class.js'
 
 export default class SolaredgeSite extends SolaredgeApi {
   #details?: SiteDetails
