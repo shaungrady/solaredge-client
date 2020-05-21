@@ -1,4 +1,3 @@
-import SolaredgeAccount from './api/account/account.class'
-import SolaredgeSite from './api/site/site.class'
+import SolaredgeClient from './client/client.class'
 
-export { SolaredgeAccount, SolaredgeSite }
+export default SolaredgeClient

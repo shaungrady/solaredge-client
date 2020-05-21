@@ -2,14 +2,14 @@
   "compilerOptions": {
     "target": "ES2018",
     "module": "commonjs",
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "allowJs": true,
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
     "alwaysStrict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
     "noImplicitReturns": true,
     "esModuleInterop": true,
     /* Source Map Options */

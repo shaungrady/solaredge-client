@@ -1,11 +1,9 @@
-export interface DateRangeParams {
-  startDate: Date
-  endDate: Date
+export interface DateRangeParam {
+  dateRange: [Date, Date]
 }
 
-export interface DateTimeRangeParams {
-  startTime: Date
-  endTime: Date
+export interface DateTimeRangeParam {
+  timeRange: [Date, Date]
 }
 
 export interface TimeUnitParam {
@@ -53,3 +51,10 @@ export const enum Meter {
   // Import power from GRID meter
   Purchased = 'Purchased',
 }
+
+export type getApiDataGeneratorConfig = {
+  apiPath: string
+  interval: Duration
+  parser: (res: any) => unknown[]
+  timeUnit?: TimeUnit
+} & (DateRangeParam | DateTimeRangeParam)
