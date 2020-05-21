@@ -1,5 +1,5 @@
 import { add, isBefore, min } from 'date-fns'
-import fetch from 'isomorphic-unfetch'
+import fetch from 'cross-fetch'
 import queryString from 'query-string'
 import { serializeDateOrTimeRange } from '../helpers/date'
 import { getApiDataGeneratorConfig } from './api.types'

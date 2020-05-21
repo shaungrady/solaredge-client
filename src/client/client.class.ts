@@ -25,6 +25,7 @@ interface Options {
   apiOrigin?: string
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export default class SolaredgeClient {
   private readonly api: Api
 
