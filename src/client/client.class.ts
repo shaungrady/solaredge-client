@@ -4,6 +4,7 @@ import {
   DateTimeRangeParam,
   TimeUnit,
   TimeUnitParam,
+  TransformerParam,
 } from '../api/api.types'
 import {
   AccountSites,
@@ -60,9 +61,10 @@ export default class SolaredgeClient {
   // Default timeUnit: `TimeUnit.Day`
   getSiteEnergyGenerator(
     siteId: string,
-    options: DateRangeParam & Partial<TimeUnitParam>
+    options: DateRangeParam &
+      Partial<TimeUnitParam & TransformerParam<unknown, unknown>>
   ): AsyncGenerator<SiteMeasurement, void, void> {
-    const { timeUnit = TimeUnit.Day, dateRange } = options
+    const { timeUnit = TimeUnit.Day, dateRange, transformer } = options
 
     // Usage limitation: This API is limited to one year when using timeUnit=DAY (i.e., daily resolution) and to one month when
     // using timeUnit=QUARTER_OF_AN_HOUR or timeUnit=HOUR. This means that the period between endTime and startTime
@@ -84,6 +86,7 @@ export default class SolaredgeClient {
       dateRange,
       interval: periodDuration,
       parser: SolaredgeClient.measurementsParser,
+      transformer,
     })
   }
 

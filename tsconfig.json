@@ -1,23 +1,28 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
-    "module": "commonjs",
+    "target": "ES2015",
+    "module": "ES2020",
     "moduleResolution": "node",
+
     "rootDir": "./src",
-    "outDir": "./dist/lib",
+    "outDir": "./lib/esm",
     "declaration": true,
+
     "strict": true,
     "alwaysStrict": true,
     // "noUnusedLocals": true,
     // "noUnusedParameters": true,
     "noImplicitReturns": true,
     "esModuleInterop": true,
+    "sourceMap": true,
+
     /* Source Map Options */
     // "sourceRoot": "",
     // "mapRoot": "",
     // "inlineSourceMap": true,
     // "inlineSources": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["DOM", "ES2018"]
   },
   "include": ["./src"]
 }

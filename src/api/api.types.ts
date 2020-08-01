@@ -10,6 +10,12 @@ export interface TimeUnitParam {
   timeUnit: TimeUnit
 }
 
+export interface TransformerParam<T, O> {
+  transformer: Transformer
+}
+
+export type Transformer = <T, O>(input: T) => O
+
 export type Serialize<T> = T extends Date
   ? string
   : T extends object
@@ -55,6 +61,7 @@ export const enum Meter {
 export type getApiDataGeneratorConfig = {
   apiPath: string
   interval: Duration
-  parser: (res: any) => unknown[]
   timeUnit?: TimeUnit
+  parser: (res: any) => unknown[]
+  transformer?: Transformer
 } & (DateRangeParam | DateTimeRangeParam)
