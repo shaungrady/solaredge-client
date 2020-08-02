@@ -17,7 +17,7 @@ export interface TransformerParam<T, O> {
 export type Transformer = <T, O>(input: T) => O
 
 export type Serialize<T> = T extends Date
-  ? string
+  ? string // eslint-disable-next-line @typescript-eslint/ban-types
   : T extends object
   ? {
       [k in keyof T]: Serialize<T[k]>
@@ -58,10 +58,11 @@ export const enum Meter {
   Purchased = 'Purchased',
 }
 
-export type getApiDataGeneratorConfig = {
+export type GetApiDataGeneratorConfig = {
   apiPath: string
   interval: Duration
   timeUnit?: TimeUnit
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   parser: (res: any) => unknown[]
   transformer?: Transformer
 } & (DateRangeParam | DateTimeRangeParam)
