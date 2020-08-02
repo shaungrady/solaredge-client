@@ -1,11 +1,63 @@
-import { add, isBefore, min } from 'date-fns'
+import { add, isBefore, lightFormat, min } from 'date-fns'
 import queryString from 'query-string'
-import { serializeDateOrTimeRange } from '../helpers/date.fns'
-import { GetApiDataGeneratorConfig } from './api.types'
+import {
+  DateOrTimeRange,
+  DateOrTimeRangeParams,
+  GetApiCallGeneratorConfig,
+  Range,
+  RangeType,
+  Serialized,
+} from './api.types'
 
 export default class Api {
+  static readonly dateFormat = 'yyyy-MM-dd'
+
+  static readonly dateTimeFormat = 'yyyy-MM-dd HH:mm:ss'
+
   static isValidApiKey(key: string): boolean {
     return /^[A-Z0-9]{32}$/.test(key)
+  }
+
+  static serializeDate(date: Date): string {
+    return lightFormat(date, Api.dateFormat)
+  }
+
+  static serializeDateTime(date: Date): string {
+    return lightFormat(date, Api.dateTimeFormat)
+  }
+
+  private static parseDateOrTimeRange<T extends keyof DateOrTimeRange>(
+    config: Subset<T, DateOrTimeRange>
+  ): Range {
+    let type: RangeType
+    let start: Date
+    let end: Date
+
+    if ('dateRange' in config) {
+      ;[start, end] = config.dateRange.sort()
+      type = RangeType.Date
+    } else {
+      ;[start, end] = config.timeRange.sort()
+      type = RangeType.DateTime
+    }
+
+    return { type, start, end }
+  }
+
+  private static serializeRange({
+    type,
+    start,
+    end,
+  }: Range): Serialized<DateOrTimeRangeParams> {
+    return type === RangeType.Date
+      ? {
+          startDate: Api.serializeDate(start),
+          endDate: Api.serializeDate(end),
+        }
+      : {
+          startTime: Api.serializeDateTime(start),
+          endTime: Api.serializeDateTime(end),
+        }
   }
 
   constructor(
@@ -42,49 +94,32 @@ export default class Api {
   }
 
   // For fetching data collections. Handles pagination and date range limitations.
-  getGenerator<T>(
-    config: GetApiDataGeneratorConfig
+  getCallGenerator<T>(
+    config: GetApiCallGeneratorConfig
   ): AsyncGenerator<T, void, void> {
-    const call = this.call.bind(this)
     const { apiPath, interval, parser, transformer } = config
+    const call = this.call.bind(this)
 
     const timeUnit = 'timeUnit' in config && config.timeUnit
-    let isDateRange: boolean
-    let rangeStart: Date
-    let rangeEnd: Date
+    const range: Readonly<Range> = Api.parseDateOrTimeRange(config)
 
-    if ('dateRange' in config) {
-      isDateRange = true
-      ;[rangeStart, rangeEnd] = config.dateRange.sort()
-    } else {
-      isDateRange = false
-      ;[rangeStart, rangeEnd] = config.timeRange.sort()
-    }
-    return (async function* apiDataGenerator(): AsyncGenerator<T, void, void> {
-      let periodStart = rangeStart
-      while (isBefore(periodStart, rangeEnd)) {
-        const periodEnd = min([rangeEnd, add(periodStart, interval)])
+    return (async function* apiCallGenerator(): AsyncGenerator<T, void, void> {
+      let periodStart = range.start
 
-        // TODO: This is kind of ugly…
-        const rangeParams = isDateRange
-          ? {
-              startDate: periodStart,
-              endDate: periodEnd,
-            }
-          : {
-              startTime: periodStart,
-              endTime: periodEnd,
-            }
+      while (isBefore(periodStart, range.end)) {
+        const periodEnd = min([range.end, add(periodStart, interval)])
+        const timeUnitParam = timeUnit ? { timeUnit } : {}
+        const rangeParams = Api.serializeRange({
+          type: range.type,
+          start: periodStart,
+          end: periodEnd,
+        })
 
-        const params: Record<string, string> = serializeDateOrTimeRange(
-          rangeParams
+        let collection = parser(
+          // eslint-disable-next-line no-await-in-loop
+          await call(apiPath, { ...rangeParams, ...timeUnitParam })
         )
-        if (timeUnit) {
-          params.timeUnit = timeUnit
-        }
 
-        // eslint-disable-next-line no-await-in-loop
-        let collection = parser(await call(apiPath, params))
         if (transformer) {
           collection = collection.map(transformer)
         }

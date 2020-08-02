@@ -1,10 +1,21 @@
-export interface DateRangeParam {
+export interface DateRange {
   dateRange: [Date, Date]
 }
+export interface DateRangeParams {
+  startDate: Date
+  endDate: Date
+}
 
-export interface DateTimeRangeParam {
+export interface DateTimeRange {
   timeRange: [Date, Date]
 }
+export interface DateTimeRangeParams {
+  startTime: Date
+  endTime: Date
+}
+
+export type DateOrTimeRange = DateRange | DateTimeRange
+export type DateOrTimeRangeParams = DateRangeParams | DateTimeRangeParams
 
 export interface TimeUnitParam {
   timeUnit: TimeUnit
@@ -16,11 +27,11 @@ export interface TransformerParam<T, O> {
 
 export type Transformer = <T, O>(input: T) => O
 
-export type Serialize<T> = T extends Date
+export type Serialized<T> = T extends Date
   ? string // eslint-disable-next-line @typescript-eslint/ban-types
   : T extends object
   ? {
-      [k in keyof T]: Serialize<T[k]>
+      [k in keyof T]: Serialized<T[k]>
     }
   : T
 
@@ -58,11 +69,23 @@ export const enum Meter {
   Purchased = 'Purchased',
 }
 
-export type GetApiDataGeneratorConfig = {
+export type GetApiCallGeneratorConfig = {
   apiPath: string
   interval: Duration
   timeUnit?: TimeUnit
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  /** Parses the API response into a collection. */
   parser: (res: any) => unknown[]
   transformer?: Transformer
-} & (DateRangeParam | DateTimeRangeParam)
+} & DateOrTimeRange
+
+export interface Range {
+  type: RangeType
+  start: Date
+  end: Date
+}
+
+export enum RangeType {
+  Date,
+  DateTime,
+}

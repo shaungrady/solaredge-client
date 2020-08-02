@@ -1,7 +1,7 @@
 import Api from '../api/api.class'
 import {
-  DateRangeParam,
-  DateTimeRangeParam,
+  DateRange,
+  DateTimeRange,
   TimeUnit,
   TimeUnitParam,
   TransformerParam,
@@ -61,7 +61,7 @@ export default class SolaredgeClient {
   // Default timeUnit: `TimeUnit.Day`
   getSiteEnergyGenerator(
     siteId: string,
-    options: DateRangeParam &
+    options: DateRange &
       Partial<TimeUnitParam & TransformerParam<unknown, unknown>>
   ): AsyncGenerator<SiteMeasurement, void, void> {
     const { timeUnit = TimeUnit.Day, dateRange, transformer } = options
@@ -80,12 +80,12 @@ export default class SolaredgeClient {
         periodDuration = { years: 1 }
     }
 
-    return this.api.getGenerator({
+    return this.api.getCallGenerator({
       apiPath: `/site/${siteId}/energy`,
       timeUnit,
       dateRange,
       interval: periodDuration,
-      parser: SolaredgeClient.measurementsParser,
+      parser: SolaredgeClient.measurementsResponseParser,
       transformer,
     })
   }
@@ -93,17 +93,17 @@ export default class SolaredgeClient {
   // Return an async generator for the site power measurements in 15 minutes resolution (in watts).
   getSitePowerGenerator(
     siteId: string,
-    options: DateTimeRangeParam
+    options: DateTimeRange
   ): AsyncGenerator<SiteMeasurement, void, void> {
     // Usage limitation: This API is limited to one-month period. This means that the period between endTime and startTime
     // should not exceed one month. If the period is longer, the system will generate error 403 with proper description.
     const periodDuration: Duration = { months: 1 }
 
-    return this.api.getGenerator({
+    return this.api.getCallGenerator({
       ...options,
       apiPath: `/site/${siteId}/power`,
       interval: periodDuration,
-      parser: SolaredgeClient.measurementsParser,
+      parser: SolaredgeClient.measurementsResponseParser,
     })
   }
 
@@ -154,11 +154,11 @@ export default class SolaredgeClient {
   getInverterTelemetryGenerator(
     siteId: string,
     inverterId: string,
-    options: DateTimeRangeParam
+    options: DateTimeRange
   ): AsyncGenerator<InverterTelemetry, void, void> {
     // Usage limitation: This API is limited to a one week period.
     const interval: Duration = { months: 1 }
-    return this.api.getGenerator<InverterTelemetry>({
+    return this.api.getCallGenerator<InverterTelemetry>({
       ...options,
       interval,
       apiPath: `/equipment/${siteId}/${inverterId}/data`,
@@ -170,7 +170,7 @@ export default class SolaredgeClient {
   //    EQUIPMENT-RELATED METHODS
   // ***************************************************************************
 
-  private static measurementsParser({
+  private static measurementsResponseParser({
     values,
     ...metadata
   }: SiteMeasurements): SiteMeasurement[] {
