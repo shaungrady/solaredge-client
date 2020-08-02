@@ -1,6 +1,6 @@
 import { add, isBefore, min } from 'date-fns'
 import queryString from 'query-string'
-import { serializeDateOrTimeRange } from '../helpers/date'
+import { serializeDateOrTimeRange } from '../helpers/date.fns'
 import { GetApiDataGeneratorConfig } from './api.types'
 
 export default class Api {
