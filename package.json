@@ -17,7 +17,8 @@
     "build:esm": "tsc -p tsconfig.json",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:umd": "rollup -c rollup.config.js",
-    "lint": "eslint ./src --ext .ts"
+    "lint": "eslint ./src --ext .ts",
+    "test": "jest"
   },
   "dependencies": {
     "assert-never": "^1.2.1",
@@ -29,6 +30,7 @@
     "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-node-resolve": "^8.4.0",
     "@rollup/plugin-typescript": "^5.0.2",
+    "@types/jest": "^26.0.8",
     "@types/node": "^14.0.27",
     "@types/node-fetch": "^2.5.7",
     "@types/traverse": "^0.6.32",
@@ -41,12 +43,14 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.22.0",
     "husky": "^4.2.5",
+    "jest": "^26.2.2",
     "lint-staged": "^10.2.11",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.23.0",
     "rollup-plugin-terser": "^6.1.0",
+    "ts-jest": "^26.1.4",
     "ts-node": "^8.10.2",
     "tslib": "^2.0.0",
     "typescript": "^3.9.7"
