@@ -1,5 +1,5 @@
 name: CI
-on: [push, pull_request]
+on: push
 
 jobs:
   build:
@@ -51,5 +51,5 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm install
 
-      - name: Build
+      - name: Lint
         run: npm run lint
