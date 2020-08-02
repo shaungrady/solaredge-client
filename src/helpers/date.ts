@@ -14,7 +14,7 @@ export function serializeDateTime(date: Date): string {
   return lightFormat(date, dateTimeFormat)
 }
 
-type dateOrDateTimeRange =
+type DateOrDateTimeRange =
   | {
       startDate: Date
       endDate: Date
@@ -25,8 +25,8 @@ type dateOrDateTimeRange =
     }
 
 export function serializeDateOrTimeRange(
-  range: dateOrDateTimeRange
-): Serialize<dateOrDateTimeRange> {
+  range: DateOrDateTimeRange
+): Serialize<DateOrDateTimeRange> {
   if ('startDate' in range) {
     return {
       startDate: serializeDate(range.startDate),

@@ -1,7 +1,7 @@
 import { add, isBefore, min } from 'date-fns'
 import queryString from 'query-string'
 import { serializeDateOrTimeRange } from '../helpers/date'
-import { getApiDataGeneratorConfig } from './api.types'
+import { GetApiDataGeneratorConfig } from './api.types'
 
 export default class Api {
   static isValidApiKey(key: string): boolean {
@@ -30,7 +30,7 @@ export default class Api {
     })
     const url = `${origin}${path}?${params}`
 
-    console.debug('Calling API:', url)
+    // console.debug('Calling API:', url)
 
     const res = await fetch(url, { headers })
     const body = await res.json()
@@ -43,7 +43,7 @@ export default class Api {
 
   // For fetching data collections. Handles pagination and date range limitations.
   getGenerator<T>(
-    config: getApiDataGeneratorConfig
+    config: GetApiDataGeneratorConfig
   ): AsyncGenerator<T, void, void> {
     const call = this.call.bind(this)
     const { apiPath, interval, parser, transformer } = config
