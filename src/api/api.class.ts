@@ -1,5 +1,4 @@
 import { add, isBefore, min } from 'date-fns'
-import fetch from 'cross-fetch'
 import queryString from 'query-string'
 import { serializeDateOrTimeRange } from '../helpers/date'
 import { getApiDataGeneratorConfig } from './api.types'
@@ -47,7 +46,7 @@ export default class Api {
     config: getApiDataGeneratorConfig
   ): AsyncGenerator<T, void, void> {
     const call = this.call.bind(this)
-    const { apiPath, interval, parser } = config
+    const { apiPath, interval, parser, transformer } = config
 
     const timeUnit = 'timeUnit' in config && config.timeUnit
     let isDateRange: boolean
@@ -85,7 +84,11 @@ export default class Api {
         }
 
         // eslint-disable-next-line no-await-in-loop
-        const collection = parser(await call(apiPath, params))
+        let collection = parser(await call(apiPath, params))
+        if (transformer) {
+          collection = collection.map(transformer)
+        }
+
         for (const data of collection) {
           yield data as T
         }

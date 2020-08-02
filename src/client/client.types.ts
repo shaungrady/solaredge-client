@@ -1,4 +1,4 @@
-import { Meter, SiteStatus, SortOrder, TimeUnit } from '../api/api.types'
+import { SiteStatus, SortOrder, TimeUnit } from '../api/api.types'
 
 export interface SitesParams {
   // The maximum number of sites returned by this call. The
@@ -88,18 +88,6 @@ interface SiteMeasurementValue {
 
 export type SiteMeasurement = Omit<SiteMeasurements, 'values'> &
   SiteMeasurementValue
-
-export interface SiteDetailedMeasurements {
-  timeUnit: TimeUnit
-  unit: string
-  meters: Array<{
-    type: Meter
-    values: Array<{
-      date: string
-      value: number
-    }>
-  }>
-}
 
 export interface SiteEnvironmentalBenefits {
   gasEmissionSaved: {
