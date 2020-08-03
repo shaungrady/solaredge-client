@@ -1,3 +1,11 @@
+export interface ApiConfig {
+  /**
+   * URL origin of the API without a trailing slash.
+   * @default https://monitoringapi.solaredge.com
+   */
+  origin: string
+}
+
 export interface DateRange {
   dateRange: [Date, Date]
 }
@@ -21,7 +29,7 @@ export interface TimeUnitParam {
   timeUnit: TimeUnit
 }
 
-export interface TransformerParam<T, O> {
+export interface TransformerParam {
   transformer: Transformer
 }
 
@@ -73,8 +81,8 @@ export type GetApiCallGeneratorConfig = {
   apiPath: string
   interval: Duration
   timeUnit?: TimeUnit
+  /** Parses the API response into a collection to be iterated over. */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  /** Parses the API response into a collection. */
   parser: (res: any) => unknown[]
   transformer?: Transformer
 } & DateOrTimeRange

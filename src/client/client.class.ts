@@ -31,13 +31,17 @@ export default class SolaredgeClient {
   private readonly api: Api
 
   constructor({ apiKey, apiOrigin }: Options) {
-    this.api = new Api(apiKey, apiOrigin)
+    this.api = new Api(apiKey, { origin: apiOrigin })
   }
 
   // ***************************************************************************
   //    ACCOUNT-RELATED METHODS
   // ***************************************************************************
 
+  /**
+   * Returns a list of sites related to the given token, which is the account api key.
+   * This API accepts parameters for convenient search, sort and pagination.
+   */
   async fetchSiteList(params: SitesParams = {}): Promise<SiteDetails[]> {
     return (await this.api.call<AccountSites>('/sites/list', params)).site
   }
@@ -61,8 +65,7 @@ export default class SolaredgeClient {
   // Default timeUnit: `TimeUnit.Day`
   getSiteEnergyGenerator(
     siteId: string,
-    options: DateRange &
-      Partial<TimeUnitParam & TransformerParam<unknown, unknown>>
+    options: DateRange & Partial<TimeUnitParam & TransformerParam>
   ): AsyncGenerator<SiteMeasurement, void, void> {
     const { timeUnit = TimeUnit.Day, dateRange, transformer } = options
 

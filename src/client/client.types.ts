@@ -1,17 +1,22 @@
 import { SiteStatus, SortOrder, TimeUnit } from '../api/api.types'
 
 export interface SitesParams {
-  // The maximum number of sites returned by this call. The
-  // maximum number of sites that can be returned by this
-  // call is 100. If you have more than 100 sites, just request
-  // another 100 sites with startIndex=100. This will fetch sites
-  // 100-199.
+  /**
+   * The maximum number of sites returned by this call. The
+   * maximum number of sites that can be returned by this
+   * call is 100. If you have more than 100 sites, just request
+   * another 100 sites with startIndex=100. This will fetch sites
+   * 100-199.
+   */
   size?: number
-  // The first site index to be returned in the results
+  /** The first site index to be returned in the results */
   startIndex?: number
   searchText?: string
+  /** A sorting option for this site list, based on one of its properties. */
   sortProperty?: SiteSortProperty
   sortOrder?: SortOrder
+  // TODO: Make this an array that gets .join(',') as it can contain more than one.
+  // E.g., `Active,Pending`
   status?: SiteStatus
 }
 

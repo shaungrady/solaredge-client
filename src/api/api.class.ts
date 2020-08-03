@@ -1,6 +1,8 @@
 import { add, isBefore, lightFormat, min } from 'date-fns'
 import queryString from 'query-string'
+import Err from '../shared/errors.enum'
 import {
+  ApiConfig,
   DateOrTimeRange,
   DateOrTimeRangeParams,
   GetApiCallGeneratorConfig,
@@ -10,6 +12,8 @@ import {
 } from './api.types'
 
 export default class Api {
+  static readonly defaultOrigin = 'https://monitoringapi.solaredge.com'
+
   static readonly dateFormat = 'yyyy-MM-dd'
 
   static readonly dateTimeFormat = 'yyyy-MM-dd HH:mm:ss'
@@ -60,30 +64,30 @@ export default class Api {
         }
   }
 
-  constructor(
-    public readonly key: string,
-    public readonly origin = 'https://monitoringapi.solaredge.com'
-  ) {
+  readonly config: Readonly<ApiConfig>
+
+  constructor(public readonly key: string, config: Partial<ApiConfig> = {}) {
     if (!Api.isValidApiKey(key)) {
-      throw Error(
-        'Bad API key (must be a 32-character uppercase alphanumeric string)'
-      )
+      throw Error(Err.invalidApiKey)
     }
+
+    this.config = Object.freeze({
+      origin: Api.defaultOrigin,
+      ...config,
+    })
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async call<T>(path: string, reqParams: Record<string, any> = {}): Promise<T> {
-    const { key, origin } = this
+    const { key, config } = this
 
     const headers: Record<string, string> = { Accept: 'application/json' }
     const params: string = queryString.stringify({
       ...reqParams,
       api_key: key,
     })
-    const url = `${origin}${path}?${params}`
 
-    // console.debug('Calling API:', url)
-
+    const url = `${config.origin}${path}?${params}`
     const res = await fetch(url, { headers })
     const body = await res.json()
 
