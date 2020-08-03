@@ -1,6 +1,7 @@
 import { add, isBefore, lightFormat, min } from 'date-fns'
 import queryString from 'query-string'
 import Err from '../shared/errors.enum'
+import { Subset } from '../shared/types'
 import {
   ApiConfig,
   DateOrTimeRange,

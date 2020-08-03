@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { parseISO } from 'date-fns'
-import 'jest-extended'
 import fetchMock from 'jest-fetch-mock'
 import Err from '../shared/errors.enum'
 import Api from './api.class'

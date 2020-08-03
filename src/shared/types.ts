@@ -1,1 +1,1 @@
-type Subset<T extends U, U> = U
+export type Subset<T extends U, U> = U
