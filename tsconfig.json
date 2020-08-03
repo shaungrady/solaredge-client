@@ -24,5 +24,6 @@
     "forceConsistentCasingInFileNames": true,
     "lib": ["DOM", "ES2018"]
   },
-  "include": ["./src"]
+  "include": ["./src"],
+  "exclude": ["./src/**/*.spec.ts"]
 }

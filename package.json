@@ -13,12 +13,16 @@
   ],
   "types": "dist/lib/index.d.ts",
   "scripts": {
+    "prebuild": "rimraf ./lib",
     "build": "run-p build:*",
     "build:esm": "tsc -p tsconfig.json",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:umd": "rollup -c rollup.config.js",
     "lint": "eslint ./src --ext .ts",
-    "test": "jest"
+    "test": "jest",
+    "ci:lint": "npm run lint",
+    "ci:test": "jest --ci --coverage",
+    "ci:build": "npm run build"
   },
   "dependencies": {
     "assert-never": "^1.2.1",
@@ -33,7 +37,6 @@
     "@types/jest": "^26.0.8",
     "@types/node": "^14.0.27",
     "@types/node-fetch": "^2.5.7",
-    "@types/traverse": "^0.6.32",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
     "dotenv": "^8.2.0",
@@ -44,6 +47,8 @@
     "eslint-plugin-import": "^2.22.0",
     "husky": "^4.2.5",
     "jest": "^26.2.2",
+    "jest-extended": "^0.11.5",
+    "jest-fetch-mock": "^3.0.3",
     "lint-staged": "^10.2.11",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
