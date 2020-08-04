@@ -1,15 +1,18 @@
 import { add, isBefore, lightFormat, min } from 'date-fns'
 import queryString from 'query-string'
+import compareDates from '../shared/compare-dates.fn'
 import Err from '../shared/errors.enum'
 import { Subset } from '../shared/types'
 import {
+  ApiCallGenerator,
   ApiConfig,
   DateOrTimeRange,
   DateOrTimeRangeParams,
-  GetApiCallGeneratorConfig,
+  ApiCallGeneratorConfig,
   Range,
   RangeType,
   Serialized,
+  ApiCallOptions,
 } from './api.types'
 
 export default class Api {
@@ -39,10 +42,10 @@ export default class Api {
     let end: Date
 
     if ('dateRange' in config) {
-      ;[start, end] = config.dateRange.sort()
+      ;[start, end] = config.dateRange.slice().sort(compareDates)
       type = RangeType.Date
     } else {
-      ;[start, end] = config.timeRange.sort()
+      ;[start, end] = config.timeRange.slice().sort(compareDates)
       type = RangeType.DateTime
     }
 
@@ -79,12 +82,19 @@ export default class Api {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async call<T>(path: string, reqParams: Record<string, any> = {}): Promise<T> {
+  async call<T>(
+    path: string,
+    options: Partial<ApiCallOptions> = {}
+  ): Promise<T> {
     const { key, config } = this
+    const callConfig: ApiCallOptions = {
+      params: {},
+      ...options,
+    }
 
     const headers: Record<string, string> = { Accept: 'application/json' }
     const params: string = queryString.stringify({
-      ...reqParams,
+      ...callConfig.params,
       api_key: key,
     })
 
@@ -98,43 +108,40 @@ export default class Api {
     return bodyValues.length === 1 ? bodyValues[0] : body
   }
 
-  // For fetching data collections. Handles pagination and date range limitations.
-  getCallGenerator<T>(
-    config: GetApiCallGeneratorConfig
-  ): AsyncGenerator<T, void, void> {
-    const { apiPath, interval, parser, transformer } = config
+  async *callGenerator<T>(
+    config: ApiCallGeneratorConfig<T>
+  ): ApiCallGenerator<T> {
+    const { apiPath, interval, parser } = config
     const call = this.call.bind(this)
 
     const timeUnit = 'timeUnit' in config && config.timeUnit
     const range: Readonly<Range> = Api.parseDateOrTimeRange(config)
 
-    return (async function* apiCallGenerator(): AsyncGenerator<T, void, void> {
-      let periodStart = range.start
+    let periodStart = range.start
+    let totalApiCalls = 0
 
-      while (isBefore(periodStart, range.end)) {
-        const periodEnd = min([range.end, add(periodStart, interval)])
-        const timeUnitParam = timeUnit ? { timeUnit } : {}
-        const rangeParams = Api.serializeRange({
-          type: range.type,
-          start: periodStart,
-          end: periodEnd,
-        })
+    while (isBefore(periodStart, range.end)) {
+      const periodEnd = min([range.end, add(periodStart, interval)])
+      const timeUnitParam = timeUnit ? { timeUnit } : {}
+      const rangeParams = Api.serializeRange({
+        type: range.type,
+        start: periodStart,
+        end: periodEnd,
+      })
 
-        let collection = parser(
-          // eslint-disable-next-line no-await-in-loop
-          await call(apiPath, { ...rangeParams, ...timeUnitParam })
-        )
+      const collection = parser(
+        // eslint-disable-next-line no-await-in-loop
+        await call(apiPath, { params: { ...rangeParams, ...timeUnitParam } })
+      )
 
-        if (transformer) {
-          collection = collection.map(transformer)
-        }
-
-        for (const data of collection) {
-          yield data as T
-        }
-
-        periodStart = periodEnd
+      for (const data of collection) {
+        yield data
       }
-    })()
+
+      totalApiCalls += 1
+      periodStart = periodEnd
+    }
+
+    return totalApiCalls
   }
 }

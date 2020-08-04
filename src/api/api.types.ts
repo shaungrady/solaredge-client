@@ -29,12 +29,6 @@ export interface TimeUnitParam {
   timeUnit: TimeUnit
 }
 
-export interface TransformerParam {
-  transformer: Transformer
-}
-
-export type Transformer = <T, O>(input: T) => O
-
 export type Serialized<T> = T extends Date
   ? string // eslint-disable-next-line @typescript-eslint/ban-types
   : T extends object
@@ -77,15 +71,25 @@ export const enum Meter {
   Purchased = 'Purchased',
 }
 
-export type GetApiCallGeneratorConfig = {
+export interface ApiCallOptions {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params: Record<string, any>
+}
+
+export type ApiCallGeneratorConfig<T> = {
   apiPath: string
   interval: Duration
   timeUnit?: TimeUnit
   /** Parses the API response into a collection to be iterated over. */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  parser: (res: any) => unknown[]
-  transformer?: Transformer
+  parser: (res: any) => T[]
 } & DateOrTimeRange
+
+/**
+ * Generator that yields individual collection items, lazily calling the API to
+ * fetch more. Returns number of API calls performed.
+ */
+export type ApiCallGenerator<T> = AsyncGenerator<T, number, void>
 
 export interface Range {
   type: RangeType

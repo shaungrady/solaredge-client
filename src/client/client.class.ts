@@ -1,10 +1,10 @@
 import Api from '../api/api.class'
 import {
+  ApiCallGenerator,
   DateRange,
   DateTimeRange,
   TimeUnit,
   TimeUnitParam,
-  TransformerParam,
 } from '../api/api.types'
 import {
   AccountSites,
@@ -43,7 +43,7 @@ export default class SolaredgeClient {
    * This API accepts parameters for convenient search, sort and pagination.
    */
   async fetchSiteList(params: SitesParams = {}): Promise<SiteDetails[]> {
-    return (await this.api.call<AccountSites>('/sites/list', params)).site
+    return (await this.api.call<AccountSites>('/sites/list', { params })).site
   }
 
   // ***************************************************************************
@@ -63,11 +63,11 @@ export default class SolaredgeClient {
 
   // Return an async generator for the site energy measurements (in watt-hours).
   // Default timeUnit: `TimeUnit.Day`
-  getSiteEnergyGenerator(
+  fetchSiteEnergyGenerator(
     siteId: string,
-    options: DateRange & Partial<TimeUnitParam & TransformerParam>
-  ): AsyncGenerator<SiteMeasurement, void, void> {
-    const { timeUnit = TimeUnit.Day, dateRange, transformer } = options
+    options: DateRange & Partial<TimeUnitParam>
+  ): ApiCallGenerator<SiteMeasurement> {
+    const { timeUnit = TimeUnit.Day, dateRange } = options
 
     // Usage limitation: This API is limited to one year when using timeUnit=DAY (i.e., daily resolution) and to one month when
     // using timeUnit=QUARTER_OF_AN_HOUR or timeUnit=HOUR. This means that the period between endTime and startTime
@@ -83,26 +83,25 @@ export default class SolaredgeClient {
         periodDuration = { years: 1 }
     }
 
-    return this.api.getCallGenerator({
+    return this.api.callGenerator({
       apiPath: `/site/${siteId}/energy`,
       timeUnit,
       dateRange,
       interval: periodDuration,
       parser: SolaredgeClient.measurementsResponseParser,
-      transformer,
     })
   }
 
   // Return an async generator for the site power measurements in 15 minutes resolution (in watts).
-  getSitePowerGenerator(
+  fetchSitePowerGenerator(
     siteId: string,
     options: DateTimeRange
-  ): AsyncGenerator<SiteMeasurement, void, void> {
+  ): ApiCallGenerator<SiteMeasurement> {
     // Usage limitation: This API is limited to one-month period. This means that the period between endTime and startTime
     // should not exceed one month. If the period is longer, the system will generate error 403 with proper description.
     const periodDuration: Duration = { months: 1 }
 
-    return this.api.getCallGenerator({
+    return this.api.callGenerator({
       ...options,
       apiPath: `/site/${siteId}/power`,
       interval: periodDuration,
@@ -135,7 +134,7 @@ export default class SolaredgeClient {
     }
     return this.api.call<SiteEnvironmentalBenefits>(
       `/site/${siteId}/envBenefits`,
-      params
+      { params }
     )
   }
 
@@ -154,14 +153,14 @@ export default class SolaredgeClient {
     ).list
   }
 
-  getInverterTelemetryGenerator(
+  fetchInverterTelemetryGenerator(
     siteId: string,
     inverterId: string,
     options: DateTimeRange
-  ): AsyncGenerator<InverterTelemetry, void, void> {
+  ): ApiCallGenerator<InverterTelemetry> {
     // Usage limitation: This API is limited to a one week period.
     const interval: Duration = { months: 1 }
-    return this.api.getCallGenerator<InverterTelemetry>({
+    return this.api.callGenerator<InverterTelemetry>({
       ...options,
       interval,
       apiPath: `/equipment/${siteId}/${inverterId}/data`,
