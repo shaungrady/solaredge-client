@@ -1,5 +1,7 @@
 /.idea/
 
-/lib/
 /coverage/
+/lib/
+
 .env
+.eslintcache

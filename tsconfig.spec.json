@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
-  "files": ["./jest.types.d.ts"],
-  "include": ["./src/**/*.spec.ts"],
+  "compilerOptions": {},
+  "files": [],
+  "include": ["./jest.types.d.ts", "./src/**/*.spec.ts"],
   "exclude": ["node_modules"]
 }

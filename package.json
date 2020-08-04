@@ -21,7 +21,7 @@
     "lint": "eslint ./src --ext .ts",
     "test": "jest",
     "ci:lint": "npm run lint",
-    "ci:test": "jest --ci --coverage",
+    "ci:test": "npm run test -- --ci --coverage",
     "ci:build": "npm run build"
   },
   "dependencies": {

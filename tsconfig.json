@@ -25,5 +25,5 @@
     "lib": ["DOM", "ES2018"]
   },
   "include": ["./src"],
-  "exclude": ["./src/**/*.spec.ts"]
+  "exclude": ["**/*.spec.ts"]
 }
