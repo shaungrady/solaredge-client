@@ -1,5 +1,10 @@
 import { SiteStatus, SortOrder, TimeUnit } from '../api/api.types'
 
+export interface SolaredgeClientOptions {
+  apiKey: string
+  apiOrigin?: string
+}
+
 export interface SitesParams {
   /**
    * The maximum number of sites returned by this call. The

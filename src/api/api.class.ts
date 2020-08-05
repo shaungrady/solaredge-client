@@ -13,6 +13,7 @@ import {
   RangeType,
   Serialized,
   ApiCallOptions,
+  ApiCallGeneratorReturn,
 } from './api.types'
 
 export default class Api {
@@ -92,7 +93,7 @@ export default class Api {
       ...options,
     }
 
-    const headers: Record<string, string> = { Accept: 'application/json' }
+    const headers = { Accept: 'application/json' }
     const params: string = queryString.stringify({
       ...callConfig.params,
       api_key: key,
@@ -113,12 +114,16 @@ export default class Api {
   ): ApiCallGenerator<T> {
     const { apiPath, interval, parser } = config
     const call = this.call.bind(this)
+    const generatorReturnData: ApiCallGeneratorReturn = {
+      config,
+      apiCallTotal: 0,
+      recordTotal: 0,
+    }
 
     const timeUnit = 'timeUnit' in config && config.timeUnit
     const range: Readonly<Range> = Api.parseDateOrTimeRange(config)
 
     let periodStart = range.start
-    let totalApiCalls = 0
 
     while (isBefore(periodStart, range.end)) {
       const periodEnd = min([range.end, add(periodStart, interval)])
@@ -129,19 +134,27 @@ export default class Api {
         end: periodEnd,
       })
 
-      const collection = parser(
-        // eslint-disable-next-line no-await-in-loop
-        await call(apiPath, { params: { ...rangeParams, ...timeUnitParam } })
-      )
+      // Since the monitoring API limits the number of API calls in a given time
+      // period, we won't call the API until it's needed.
+      // eslint-disable-next-line no-await-in-loop
+      const callData = await call(apiPath, {
+        params: {
+          ...rangeParams,
+          ...timeUnitParam,
+        },
+      })
+
+      const collection = parser(callData)
 
       for (const data of collection) {
+        generatorReturnData.recordTotal += 1
         yield data
       }
 
-      totalApiCalls += 1
+      generatorReturnData.apiCallTotal += 1
       periodStart = periodEnd
     }
 
-    return totalApiCalls
+    return generatorReturnData
   }
 }

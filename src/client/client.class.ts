@@ -7,6 +7,7 @@ import {
   TimeUnitParam,
 } from '../api/api.types'
 import {
+  SolaredgeClientOptions,
   AccountSites,
   EquipmentChange,
   EquipmentChangeLog,
@@ -21,16 +22,10 @@ import {
   SitesParams,
 } from './client.types'
 
-interface Options {
-  apiKey: string
-  apiOrigin?: string
-}
-
-// eslint-disable-next-line import/prefer-default-export
 export default class SolaredgeClient {
   private readonly api: Api
 
-  constructor({ apiKey, apiOrigin }: Options) {
+  constructor({ apiKey, apiOrigin }: SolaredgeClientOptions) {
     this.api = new Api(apiKey, { origin: apiOrigin })
   }
 
@@ -43,7 +38,8 @@ export default class SolaredgeClient {
    * This API accepts parameters for convenient search, sort and pagination.
    */
   async fetchSiteList(params: SitesParams = {}): Promise<SiteDetails[]> {
-    return (await this.api.call<AccountSites>('/sites/list', { params })).site
+    const data = await this.api.call<AccountSites>('/sites/list', { params })
+    return data.site
   }
 
   // ***************************************************************************

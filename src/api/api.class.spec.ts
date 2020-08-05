@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { parseISO } from 'date-fns'
 import fetchMock from 'jest-fetch-mock'
 import * as queryString from 'querystring'
 import Err from '../shared/errors.enum'
+import mockResponseBody from '../shared/response-body.mock'
 import Api from './api.class'
 import { ApiCallGeneratorConfig, TimeUnit } from './api.types'
 
@@ -52,12 +52,10 @@ describe(`Api`, () => {
     })
 
     it(`doesn't construct with an invalid API key`, () => {
-      // @ts-ignore
       expect(() => new Api(`${apiKey}!`)).toThrowError(Err.invalidApiKey)
     })
 
     it(`constructs with a valid API key`, () => {
-      // @ts-ignore
       expect(new Api(apiKey)).toBeInstanceOf(Api)
     })
   })
@@ -75,7 +73,6 @@ describe(`Api`, () => {
         Promise.resolve(
           JSON.stringify({
             url,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             params: queryString.parse(url.split('?').pop()!),
           })
         )
@@ -174,6 +171,25 @@ describe(`Api`, () => {
         }
       })
 
+      it(`doesn't matter if dateRange or timeRange is reversed`, async () => {
+        const { apiPath, timeUnit, interval, parser } = config
+        const generator = api.callGenerator<CallDebug>({
+          timeRange: [endDate, startDate],
+          apiPath,
+          timeUnit,
+          interval,
+          parser,
+        })
+
+        const result = await generator.next()
+
+        expect(result.done).toBeFalse()
+        if (!result.done) {
+          expect(result.value.params.startTime).toBe('1999-01-01 00:00:00')
+          expect(result.value.params.endTime).toBe('1999-02-01 00:00:00')
+        }
+      })
+
       it(`accepts an interval`, async () => {
         const generator = api.callGenerator<CallDebug>(config)
         const result = await generator.next()
@@ -207,7 +223,7 @@ describe(`Api`, () => {
 
         const generator = api.callGenerator<CallDebug>(config)
         const first = await generator.next()
-        const { value: apiCalls, done } = await generator.next()
+        const { done } = await generator.next()
 
         if (first.done) {
           expect(first.done).toBeFalse()
@@ -216,8 +232,26 @@ describe(`Api`, () => {
 
         expect(first.value.params.startDate).toBe('1999-01-01')
         expect(first.value.params.endDate).toBe('2000-01-01')
-        expect(apiCalls).toBe(1)
         expect(done).toBeTrue()
+      })
+
+      it(`returns data about the calls`, async () => {
+        config.parser = (res) => new Array(12).fill(res)
+        const generator = api.callGenerator<CallDebug>(config)
+
+        let value: any
+        let done = false
+        while (!done) {
+          const result = await generator.next()
+          value = result.value
+          done = result.done!
+        }
+
+        expect(value).toEqual({
+          config,
+          apiCallTotal: 12,
+          recordTotal: 144,
+        })
       })
     })
   })
