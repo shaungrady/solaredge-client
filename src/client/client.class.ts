@@ -7,7 +7,6 @@ import {
   TimeUnitParam,
 } from '../api/api.types'
 import {
-  SolaredgeClientOptions,
   AccountSites,
   EquipmentChange,
   EquipmentChangeLog,
@@ -20,9 +19,10 @@ import {
   SiteMeasurement,
   SiteMeasurements,
   SitesParams,
+  SolaredgeClientOptions,
 } from './client.types'
 
-export default class SolaredgeClient {
+export default class Client {
   private readonly api: Api
 
   constructor({ apiKey, apiOrigin }: SolaredgeClientOptions) {
@@ -84,7 +84,7 @@ export default class SolaredgeClient {
       timeUnit,
       dateRange,
       interval: periodDuration,
-      parser: SolaredgeClient.measurementsResponseParser,
+      parser: Client.measurementsResponseParser,
     })
   }
 
@@ -101,7 +101,7 @@ export default class SolaredgeClient {
       ...options,
       apiPath: `/site/${siteId}/power`,
       interval: periodDuration,
-      parser: SolaredgeClient.measurementsResponseParser,
+      parser: Client.measurementsResponseParser,
     })
   }
 

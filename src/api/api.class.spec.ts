@@ -2,6 +2,7 @@ import { parseISO } from 'date-fns'
 import fetchMock from 'jest-fetch-mock'
 import * as queryString from 'querystring'
 import Err from '../shared/errors.enum'
+import { parseParams } from '../shared/parse-params.mock'
 import mockResponseBody from '../shared/response-body.mock'
 import Api from './api.class'
 import { ApiCallGeneratorConfig, TimeUnit } from './api.types'
@@ -73,7 +74,7 @@ describe(`Api`, () => {
         Promise.resolve(
           JSON.stringify({
             url,
-            params: queryString.parse(url.split('?').pop()!),
+            params: parseParams(url),
           })
         )
       )
