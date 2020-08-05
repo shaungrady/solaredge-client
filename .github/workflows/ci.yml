@@ -54,6 +54,12 @@ jobs:
       - name: Test
         run: npm run ci:test
 
+      - name: Upload test coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          directory: ./coverage
+
   build:
     name: Build
     needs: [lint, test]
