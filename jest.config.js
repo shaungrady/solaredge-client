@@ -9,5 +9,5 @@ module.exports = {
   setupFilesAfterEnv: ['jest-extended'],
   testEnvironment: 'node',
 
-  collectCoverageFrom: ['./src/**/*.ts', '!./src/**/*.spec.ts'],
+  collectCoverageFrom: ['./src/**/*.ts', '!**/*.spec.ts', '!**/*.mock.ts'],
 }
