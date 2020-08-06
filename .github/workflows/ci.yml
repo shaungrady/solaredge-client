@@ -51,14 +51,13 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm install
 
-      - name: Test
-        run: npm run ci:test
-
-      - name: Upload test coverage
-        uses: codecov/codecov-action@v1
+      - name: Test and report coverage
+        uses: paambaati/codeclimate-action@v2.6.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          directory: ./coverage
+          coverageCommand: npm run ci:test
+          coverageLocations: ./coverage/lcov.info:lcov
 
   build:
     name: Build
