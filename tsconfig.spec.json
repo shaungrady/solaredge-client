@@ -2,6 +2,6 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {},
   "files": [],
-  "include": ["./jest.types.d.ts", "**/*.spec.ts", "**/*.mock.ts"],
+  "include": ["./jest.types.d.ts", "**/*.spec.*", "**/*.mock.*", "**/test/"],
   "exclude": ["node_modules"]
 }

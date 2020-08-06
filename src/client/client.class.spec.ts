@@ -1,8 +1,9 @@
 import { parseISO } from 'date-fns'
 import { TimeUnit } from '../api/api.types'
+import { asyncForEach } from '../test/async-for-each.fn'
 import Err from '../shared/errors.enum'
-import { parseParams } from '../shared/parse-params.mock'
-import mockResponseBody from '../shared/response-body.mock'
+import { parseParams } from '../test/parse-params.fn'
+import mockResponseBody from '../test/mock-response-body.fn'
 import Client from './client.class'
 
 describe(`Client`, () => {
@@ -10,10 +11,10 @@ describe(`Client`, () => {
   const startDate = parseISO('1999-01-01')
   const endDate = parseISO('2001-01-01')
   let dateRange: [Date, Date]
-  let timeRange: [Date, Date]
+  // let timeRange: [Date, Date]
 
   beforeEach(() => {
-    dateRange = timeRange = [startDate, endDate]
+    dateRange = [startDate, endDate]
   })
 
   describe(`construction`, () => {
@@ -111,7 +112,6 @@ describe(`Client`, () => {
       })
 
       it(`uses a one year interval when 'timeUnit' is greater than an hour`, async () => {
-        const reqs: Promise<any>[] = []
         const timeUnits = [
           TimeUnit.Day,
           TimeUnit.Week,
@@ -119,36 +119,27 @@ describe(`Client`, () => {
           TimeUnit.Year,
         ]
 
-        timeUnits.forEach((timeUnit) => {
-          const req = client
+        await asyncForEach(timeUnits, async (timeUnit) => {
+          await client
             .fetchSiteEnergyGenerator('42', { dateRange, timeUnit })
             .next()
-          reqs.push(req)
-
           const params = lastCallParams()
           expect(params).toHaveProperty('startDate', '1999-01-01')
           expect(params).toHaveProperty('endDate', '2000-01-01')
         })
-
-        await Promise.all(reqs)
       })
 
       it(`uses a one month interval when 'timeUnit' is less than than a day`, async () => {
-        const reqs: Promise<any>[] = []
         const timeUnits = [TimeUnit.QuarterHour, TimeUnit.Hour]
 
-        timeUnits.forEach((timeUnit) => {
-          const req = client
+        await asyncForEach(timeUnits, async (timeUnit) => {
+          await client
             .fetchSiteEnergyGenerator('42', { dateRange, timeUnit })
             .next()
-          reqs.push(req)
-
           const params = lastCallParams()
           expect(params).toHaveProperty('startDate', '1999-01-01')
           expect(params).toHaveProperty('endDate', '1999-02-01')
         })
-
-        await Promise.all(reqs)
       })
     })
   })
