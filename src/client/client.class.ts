@@ -122,11 +122,10 @@ export default class Client {
 
   async fetchSiteEnvironmentalBenefits(
     siteId: string,
-    metricUnits?: boolean
+    metricUnits = false
   ): Promise<SiteEnvironmentalBenefits> {
-    const params: { systemUnits?: string } = {}
-    if (metricUnits ?? false) {
-      params.systemUnits = metricUnits ? 'Metric' : 'Imperial'
+    const params = {
+      systemUnits: metricUnits ? 'Metric' : 'Imperial',
     }
     return this.api.call<SiteEnvironmentalBenefits>(
       `/site/${siteId}/envBenefits`,
@@ -142,11 +141,10 @@ export default class Client {
     siteId: string,
     equipmentId: string
   ): Promise<EquipmentChange[]> {
-    return (
-      await this.api.call<EquipmentChangeLog>(
-        `/equipment/${siteId}/${equipmentId}/changeLog`
-      )
-    ).list
+    const data = await this.api.call<EquipmentChangeLog>(
+      `/equipment/${siteId}/${equipmentId}/changeLog`
+    )
+    return data.list
   }
 
   fetchInverterTelemetryGenerator(
