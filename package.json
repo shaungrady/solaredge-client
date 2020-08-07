@@ -22,7 +22,8 @@
     "test": "jest",
     "ci:lint": "npm run lint",
     "ci:test": "npm run test -- --ci --coverage",
-    "ci:build": "npm run build"
+    "ci:build": "npm run build",
+    "preversion": "run-p lint test build:* && git add -f -A ./lib"
   },
   "dependencies": {
     "assert-never": "^1.2.1",
