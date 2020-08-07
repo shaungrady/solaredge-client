@@ -89,7 +89,16 @@ export type ApiCallGeneratorConfig<T> = {
  * Generator that yields individual collection items, lazily calling the API to
  * fetch more. Returns number of API calls performed.
  */
-export type ApiCallGenerator<T> = AsyncGenerator<T, number, void>
+export type ApiCallGenerator<T> = AsyncGenerator<
+  T,
+  ApiCallGeneratorReturn,
+  void
+>
+export interface ApiCallGeneratorReturn {
+  config: ApiCallGeneratorConfig<unknown>
+  apiCallTotal: number
+  recordTotal: number
+}
 
 export interface Range {
   type: RangeType

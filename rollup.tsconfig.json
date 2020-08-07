@@ -5,5 +5,5 @@
     "esModuleInterop": true,
     "sourceMap": true
   },
-  "exclude": ["**/*.spec.ts"]
+  "exclude": ["**/*.spec.*", "**/*.mock.*", "**/test/"]
 }

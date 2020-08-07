@@ -19,18 +19,13 @@ import {
   SiteMeasurement,
   SiteMeasurements,
   SitesParams,
+  SolaredgeClientOptions,
 } from './client.types'
 
-interface Options {
-  apiKey: string
-  apiOrigin?: string
-}
-
-// eslint-disable-next-line import/prefer-default-export
-export default class SolaredgeClient {
+export default class Client {
   private readonly api: Api
 
-  constructor({ apiKey, apiOrigin }: Options) {
+  constructor({ apiKey, apiOrigin }: SolaredgeClientOptions) {
     this.api = new Api(apiKey, { origin: apiOrigin })
   }
 
@@ -43,7 +38,8 @@ export default class SolaredgeClient {
    * This API accepts parameters for convenient search, sort and pagination.
    */
   async fetchSiteList(params: SitesParams = {}): Promise<SiteDetails[]> {
-    return (await this.api.call<AccountSites>('/sites/list', { params })).site
+    const data = await this.api.call<AccountSites>('/sites/list', { params })
+    return data.site
   }
 
   // ***************************************************************************
@@ -88,7 +84,7 @@ export default class SolaredgeClient {
       timeUnit,
       dateRange,
       interval: periodDuration,
-      parser: SolaredgeClient.measurementsResponseParser,
+      parser: Client.measurementsResponseParser,
     })
   }
 
@@ -105,7 +101,7 @@ export default class SolaredgeClient {
       ...options,
       apiPath: `/site/${siteId}/power`,
       interval: periodDuration,
-      parser: SolaredgeClient.measurementsResponseParser,
+      parser: Client.measurementsResponseParser,
     })
   }
 
@@ -126,11 +122,10 @@ export default class SolaredgeClient {
 
   async fetchSiteEnvironmentalBenefits(
     siteId: string,
-    metricUnits?: boolean
+    metricUnits = false
   ): Promise<SiteEnvironmentalBenefits> {
-    const params: { systemUnits?: string } = {}
-    if (metricUnits ?? false) {
-      params.systemUnits = metricUnits ? 'Metric' : 'Imperial'
+    const params = {
+      systemUnits: metricUnits ? 'Metric' : 'Imperial',
     }
     return this.api.call<SiteEnvironmentalBenefits>(
       `/site/${siteId}/envBenefits`,
@@ -146,11 +141,10 @@ export default class SolaredgeClient {
     siteId: string,
     equipmentId: string
   ): Promise<EquipmentChange[]> {
-    return (
-      await this.api.call<EquipmentChangeLog>(
-        `/equipment/${siteId}/${equipmentId}/changeLog`
-      )
-    ).list
+    const data = await this.api.call<EquipmentChangeLog>(
+      `/equipment/${siteId}/${equipmentId}/changeLog`
+    )
+    return data.list
   }
 
   fetchInverterTelemetryGenerator(

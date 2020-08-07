@@ -10,20 +10,13 @@
 
     "strict": true,
     "alwaysStrict": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
+    "noUnusedLocals": true,
     "noImplicitReturns": true,
     "esModuleInterop": true,
     "sourceMap": true,
-
-    /* Source Map Options */
-    // "sourceRoot": "",
-    // "mapRoot": "",
-    // "inlineSourceMap": true,
-    // "inlineSources": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["DOM", "ES2018"]
   },
   "include": ["./src"],
-  "exclude": ["**/*.spec.ts"]
+  "exclude": ["**/*.spec.*", "**/*.mock.*", "**/test/"]
 }
