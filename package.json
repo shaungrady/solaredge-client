@@ -1,6 +1,6 @@
 {
   "name": "solaredge-client",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "Shaun Grady",
   "description": "SolarEdge API Client",
   "homepage": "https://github.com/shaungrady/solaredge-client",
