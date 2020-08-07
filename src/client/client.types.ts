@@ -30,7 +30,7 @@ export interface AccountSites {
   site: SiteDetails[]
 }
 
-export enum SiteSortProperty {
+export const enum SiteSortProperty {
   Name = 'Name',
   Country = 'Country',
   State = 'State',
