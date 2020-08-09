@@ -8,10 +8,10 @@
   "license": "ISC",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
+  "types": "./lib/esm/index.d.ts",
   "files": [
-    "lib/"
+    "./lib/"
   ],
-  "types": "dist/lib/index.d.ts",
   "scripts": {
     "prebuild": "rimraf ./lib",
     "build": "run-p build:*",
