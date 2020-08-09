@@ -1,2 +1,4 @@
 import SolaredgeClient from './client/client.class';
-export default SolaredgeClient;
+export { SolaredgeClient };
+export * from './api/api.types';
+export * from './client/client.types';
