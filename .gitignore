@@ -1,3 +1,9 @@
+lib/
+release/
+coverage/
+.env
+.eslintcache
+
 # Logs
 logs
 *.log
@@ -9,10 +15,6 @@ lerna-debug.log*
 # Editors
 .idea/*
 .vscode/*
-
-coverage/
-.env
-.eslintcache
 
 ## Operating Systems ##
 
