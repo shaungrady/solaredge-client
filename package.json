@@ -18,11 +18,11 @@
     "lint": "eslint ./src --ext .ts",
     "test": "jest",
     "release": "echo \"Releases are handled via GitHub\" && exit 1",
+    "prepublish": "npm run build",
     "ci:build": "npm run build",
     "ci:lint": "npm run lint",
     "ci:test": "npm run test -- --ci --coverage",
-    "ci:release-draft": "node scripts/push-draft-release.js",
-    "preversion": "run-p lint test build:* && git add -f -A ./lib"
+    "ci:release-draft": "node scripts/push-draft-release.js"
   },
   "dependencies": {
     "assert-never": "^1.2.1",
