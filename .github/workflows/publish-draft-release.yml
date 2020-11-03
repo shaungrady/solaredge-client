@@ -1,15 +1,15 @@
-name: Publish Draft Release
+name: Release
 
 on:
-  push:
-    branches:
-      - main
-    tags-ignore:
-      - v*
+  workflow_run:
+    workflows: ["CI"]
+    branches: [main]
+    types:
+      - completed
 
 jobs:
   publish-draft-release:
-    name: Publish draft release
+    name: Draft
     runs-on: ubuntu-latest
 
     steps:
