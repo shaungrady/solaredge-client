@@ -1,0 +1,51 @@
+name: Publish Draft Release
+
+on:
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - v*
+
+jobs:
+  publish-draft-release:
+    name: Publish draft release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set git credentials
+        run: |
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git config user.name "${{ github.actor }}"
+
+      - name: Install Node
+        uses: volta-cli/action@v1
+
+      - name: Restore cached dependencies
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Verify build
+        run: npm run ci:build
+
+      - name: Update release branch
+        run: npm run ci:release-draft
+
+      - name: Create/update GitHub release
+        uses: actions/github-script@v2
+        with:
+          script: |
+            const publishDraftRelease = require(`${process.env.GITHUB_WORKSPACE}/scripts/github/publish-draft-release.js`)
+            publishDraftRelease({ github, context })
