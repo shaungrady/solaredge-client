@@ -6,11 +6,11 @@
   "homepage": "https://github.com/shaungrady/solaredge-client",
   "repository": "github:shaungrady/solaredge-client",
   "license": "ISC",
-  "main": "./lib/cjs/index.js",
-  "module": "./lib/esm/index.js",
-  "types": "./lib/esm/index.d.ts",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "types": "lib/esm/index.d.ts",
   "files": [
-    "./lib/"
+    "lib/"
   ],
   "scripts": {
     "watch": "tsc --build --watch",
