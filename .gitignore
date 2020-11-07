@@ -3,6 +3,7 @@ release/
 coverage/
 .env
 .eslintcache
+node_modules/
 
 # Logs
 logs

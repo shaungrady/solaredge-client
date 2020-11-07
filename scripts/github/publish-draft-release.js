@@ -1,4 +1,6 @@
-const { env: { GITHUB_WORKSPACE } } = require('process')
+const {
+	env: { GITHUB_WORKSPACE },
+} = require('process')
 const { readFileSync } = require('fs')
 const { version } = require(`${GITHUB_WORKSPACE}/package.json`)
 
@@ -18,12 +20,15 @@ module.exports = async ({ github, context }) => {
 	const target_commitish = 'release/next'
 	const name = version
 	const tag_name = `v${version}`
-	const body = readFileSync(`${GITHUB_WORKSPACE}/release/changelog.md`, { encoding })
+	const body = readFileSync(`${GITHUB_WORKSPACE}/release/changelog.md`, {
+		encoding,
+	})
 
 	// Get any existing draft release…
 	const { data } = await github.repos.listReleases(ownerRepo)
-	const previousDraft = data.find(release =>
-		release.draft === true && release.target_commitish === target_commitish
+	const previousDraft = data.find(
+		(release) =>
+			release.draft === true && release.target_commitish === target_commitish
 	)
 
 	if (previousDraft) {
@@ -41,7 +46,7 @@ module.exports = async ({ github, context }) => {
 			target_commitish,
 			name,
 			tag_name,
-			body
+			body,
 		})
 	}
 }

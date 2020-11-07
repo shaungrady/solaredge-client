@@ -1,24 +1,24 @@
 {
-  "compilerOptions": {
-    "target": "ES2015",
-    "module": "ES2020",
-    "moduleResolution": "Node",
+	"compilerOptions": {
+		"target": "ES2015",
+		"module": "ES2020",
+		"moduleResolution": "Node",
 
-    "rootDir": "./src",
-    "outDir": "./lib/esm",
-    "declaration": true,
+		"rootDir": "./src",
+		"outDir": "./lib/esm",
+		"declaration": true,
 
-    "strict": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": true,
-    "noImplicitReturns": true,
-    "esModuleInterop": true,
-    "sourceMap": true,
-    "forceConsistentCasingInFileNames": true,
-    "lib": ["DOM", "ES2018"],
+		"strict": true,
+		"alwaysStrict": true,
+		"noUnusedLocals": true,
+		"noImplicitReturns": true,
+		"esModuleInterop": true,
+		"sourceMap": true,
+		"forceConsistentCasingInFileNames": true,
+		"lib": ["DOM", "ES2018"],
 
-    "importHelpers": true
-  },
-  "include": ["./src"],
-  "exclude": ["**/*.spec.*", "**/*.mock.*", "**/test/"]
+		"importHelpers": true
+	},
+	"include": ["./src"],
+	"exclude": ["**/*.spec.*", "**/*.mock.*", "**/test/"]
 }

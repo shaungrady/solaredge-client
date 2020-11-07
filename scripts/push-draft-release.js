@@ -13,8 +13,11 @@ const encoding = 'utf-8'
 
 console.log('Generating release changelog…')
 
-const dryRunOutput = execSync('standard-version --skip.commit --skip.tag --dry-run', { encoding })
-const [,changelog] = dryRunOutput.split(/\s+---\s+/g);
+const dryRunOutput = execSync(
+	'standard-version --skip.commit --skip.tag --dry-run',
+	{ encoding }
+)
+const [, changelog] = dryRunOutput.split(/\s+---\s+/g)
 
 if (!fs.existsSync('./release')) {
 	fs.mkdirSync('./release')
