@@ -1,64 +1,64 @@
 {
-  "name": "@shaungrady/solaredge-client",
-  "version": "1.0.2",
-  "author": "Shaun Grady",
-  "description": "SolarEdge API Client",
-  "homepage": "https://github.com/shaungrady/solaredge-client",
-  "repository": "github:shaungrady/solaredge-client",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
-  "license": "ISC",
-  "main": "lib/cjs/index.js",
-  "module": "lib/esm/index.js",
-  "types": "lib/esm/index.d.ts",
-  "files": [
-    "lib/"
-  ],
-  "scripts": {
-    "watch": "tsc --build --watch",
-    "build": "tsc --build tsconfig.json tsconfig.cjs.json tsconfig.umd.json",
-    "lint": "eslint ./src --ext .ts",
-    "test": "jest",
-    "release": "echo \"Releases are handled via GitHub\" && exit 1",
-    "prepublish": "yarn run build",
-    "ci:build": "yarn run build",
-    "ci:lint": "yarn run lint",
-    "ci:test": "yarn run test -- --ci --coverage",
-    "ci:release-draft": "node scripts/push-draft-release.js"
-  },
-  "dependencies": {
-    "assert-never": "^1.2.1",
-    "cross-fetch": "^3.0.6",
-    "date-fns": "^2.16.1",
-    "query-string": "^6.13.7"
-  },
-  "devDependencies": {
-    "@types/jest": "^26.0.15",
-    "@types/node": "^14.14.6",
-    "@types/node-fetch": "^2.5.7",
-    "@typescript-eslint/eslint-plugin": "^4.6.1",
-    "@typescript-eslint/parser": "^4.6.1",
-    "dotenv": "^8.2.0",
-    "eslint": "^7.13.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-airbnb-typescript": "^12.0.0",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-plugin-import": "^2.22.1",
-    "husky": "^4.3.0",
-    "jest": "^26.6.3",
-    "jest-extended": "^0.11.5",
-    "jest-fetch-mock": "^3.0.3",
-    "lint-staged": "^10.5.1",
-    "prettier": "^2.1.2",
-    "standard-version": "^9.0.0",
-    "ts-jest": "^26.4.3",
-    "ts-node": "^9.0.0",
-    "tslib": "^2.0.3",
-    "typescript": "^4.0.5"
-  },
-  "volta": {
-    "node": "14.15.0",
-    "yarn": "1.22.10"
-  }
+	"name": "@shaungrady/solaredge-client",
+	"version": "1.0.2",
+	"author": "Shaun Grady",
+	"description": "SolarEdge API Client",
+	"homepage": "https://github.com/shaungrady/solaredge-client",
+	"repository": "github:shaungrady/solaredge-client",
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com/"
+	},
+	"license": "ISC",
+	"main": "lib/cjs/index.js",
+	"module": "lib/esm/index.js",
+	"types": "lib/esm/index.d.ts",
+	"files": [
+		"lib/"
+	],
+	"scripts": {
+		"watch": "tsc --build --watch",
+		"build": "tsc --build tsconfig.json tsconfig.cjs.json tsconfig.umd.json",
+		"lint": "eslint ./src --ext .ts",
+		"test": "jest",
+		"release": "echo \"Releases are handled via GitHub\" && exit 1",
+		"prepublish": "yarn run build",
+		"ci:build": "yarn run build",
+		"ci:lint": "yarn run lint",
+		"ci:test": "yarn run test -- --ci --coverage",
+		"ci:release-draft": "node scripts/push-draft-release.js"
+	},
+	"dependencies": {
+		"assert-never": "^1.2.1",
+		"cross-fetch": "^3.0.6",
+		"date-fns": "^2.16.1",
+		"query-string": "^6.13.7"
+	},
+	"devDependencies": {
+		"@types/jest": "^26.0.15",
+		"@types/node": "^14.14.6",
+		"@types/node-fetch": "^2.5.7",
+		"@typescript-eslint/eslint-plugin": "^4.6.1",
+		"@typescript-eslint/parser": "^4.6.1",
+		"dotenv": "^8.2.0",
+		"eslint": "^7.13.0",
+		"eslint-config-airbnb-base": "^14.2.1",
+		"eslint-config-airbnb-typescript": "^12.0.0",
+		"eslint-config-prettier": "^6.15.0",
+		"eslint-plugin-import": "^2.22.1",
+		"husky": "^4.3.0",
+		"jest": "^26.6.3",
+		"jest-extended": "^0.11.5",
+		"jest-fetch-mock": "^3.0.3",
+		"lint-staged": "^10.5.1",
+		"prettier": "^2.1.2",
+		"standard-version": "^9.0.0",
+		"ts-jest": "^26.4.3",
+		"ts-node": "^9.0.0",
+		"tslib": "^2.0.3",
+		"typescript": "^4.0.5"
+	},
+	"volta": {
+		"node": "14.15.0",
+		"yarn": "1.22.10"
+	}
 }
