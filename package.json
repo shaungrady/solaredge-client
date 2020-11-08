@@ -6,7 +6,7 @@
   "homepage": "https://github.com/shaungrady/solaredge-client",
   "repository": "github:shaungrady/solaredge-client",
   "publishConfig": {
-    "registry":"https://npm.pkg.github.com/"
+    "registry": "https://npm.pkg.github.com/"
   },
   "license": "ISC",
   "main": "lib/cjs/index.js",
@@ -21,10 +21,10 @@
     "lint": "eslint ./src --ext .ts",
     "test": "jest",
     "release": "echo \"Releases are handled via GitHub\" && exit 1",
-    "prepublish": "npm run build",
-    "ci:build": "npm run build",
-    "ci:lint": "npm run lint",
-    "ci:test": "npm run test -- --ci --coverage",
+    "prepublish": "yarn run build",
+    "ci:build": "yarn run build",
+    "ci:lint": "yarn run lint",
+    "ci:test": "yarn run test -- --ci --coverage",
     "ci:release-draft": "node scripts/push-draft-release.js"
   },
   "dependencies": {
@@ -37,12 +37,12 @@
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.6",
     "@types/node-fetch": "^2.5.7",
-    "@typescript-eslint/eslint-plugin": "^3.10.1",
-    "@typescript-eslint/parser": "^3.10.1",
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
     "dotenv": "^8.2.0",
     "eslint": "^7.13.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-airbnb-typescript": "^9.0.0",
+    "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-import": "^2.22.1",
     "husky": "^4.3.0",
@@ -59,6 +59,6 @@
   },
   "volta": {
     "node": "14.15.0",
-    "npm": "6.14.8"
+    "yarn": "1.22.10"
   }
 }

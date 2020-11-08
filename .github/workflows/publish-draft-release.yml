@@ -32,17 +32,17 @@ jobs:
         id: cache
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npm install
+        run: yarn install
 
       - name: Verify build
-        run: npm run ci:build
+        run: yarn run ci:build
 
       - name: Update release branch
-        run: npm run ci:release-draft
+        run: yarn run ci:release-draft
 
       - name: Create/update GitHub release
         uses: actions/github-script@v3
