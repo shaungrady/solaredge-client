@@ -13,7 +13,7 @@ jobs:
         uses: volta-cli/action@v1
 
       - name: Restore cached dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         id: cache
         with:
           path: '**/node_modules'
@@ -37,7 +37,7 @@ jobs:
         uses: volta-cli/action@v1
 
       - name: Restore cached dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         id: cache
         with:
           path: '**/node_modules'
@@ -67,7 +67,7 @@ jobs:
         uses: volta-cli/action@v1
 
       - name: Restore cached dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         id: cache
         with:
           path: '**/node_modules'
