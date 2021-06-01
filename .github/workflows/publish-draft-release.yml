@@ -45,7 +45,7 @@ jobs:
         run: yarn run ci:release-draft
 
       - name: Create/update GitHub release
-        uses: actions/github-script@v3
+        uses: actions/github-script@v4.0.2
         with:
           script: |
             const publishDraftRelease = require(`${process.env.GITHUB_WORKSPACE}/scripts/github/publish-draft-release.js`)
