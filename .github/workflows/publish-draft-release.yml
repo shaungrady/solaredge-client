@@ -28,7 +28,7 @@ jobs:
         uses: volta-cli/action@v1
 
       - name: Restore cached dependencies
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.6
         id: cache
         with:
           path: '**/node_modules'
