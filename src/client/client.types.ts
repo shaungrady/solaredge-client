@@ -110,7 +110,7 @@ export interface SiteEnvironmentalBenefits {
 	lightBulbs: number
 }
 
-export interface SiteEquipmentList {
+export interface SiteComponentsList {
 	count: number
 	list: EquipmentDetails[]
 }
@@ -120,6 +120,33 @@ export interface EquipmentDetails {
 	manufacturer: string
 	model: string
 	serialNumber: string
+}
+
+export interface SiteInventory {
+	meters: unknown[]
+	sensors: unknown[]
+	gateways: Gateway[]
+	batteries: unknown[]
+	inverters: Inverter[]
+}
+
+export interface Gateway {
+	name: string
+	communicationMethod: string
+	SN: string
+	cpuVersion: string
+}
+
+export interface Inverter {
+	name: string
+	manufacturer: string
+	model: string
+	communicationMethod: string
+	dsp1Version: string
+	dsp2Version: string
+	cpuVersion: string
+	SN: string
+	connectedOptimizers: number
 }
 
 export interface InverterData {

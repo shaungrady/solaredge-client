@@ -1,7 +1,15 @@
 {
 	"extends": "./tsconfig.json",
-	"compilerOptions": {},
+	"compilerOptions": {
+		"resolveJsonModule": true
+	},
 	"files": [],
-	"include": ["./jest.types.d.ts", "**/*.spec.*", "**/*.mock.*", "**/test/"],
+	"include": [
+		"./jest.types.d.ts",
+		"**/*.spec.*",
+		"**/*.mock.*",
+		"**/test/",
+		"**/mocks/"
+	],
 	"exclude": ["node_modules"]
 }

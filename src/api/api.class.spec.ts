@@ -1,7 +1,6 @@
 import { parseISO } from 'date-fns'
-import fetchMock from 'jest-fetch-mock'
+import { apiCalls } from '../mocks/handlers'
 import Err from '../shared/errors.enum'
-import { parseParams } from '../test/parse-params.fn'
 import Api from './api.class'
 import { ApiCallGeneratorConfig, TimeUnit } from './api.types'
 
@@ -16,13 +15,13 @@ describe(`Api`, () => {
 		describe(`#isValidApiKey`, () => {
 			// prettier-ignore
 			const testCases: [string, boolean][] = [
-        [apiKey, true],
-        [apiKey.toLowerCase(), false],
-        [apiKey.replace('W', '!'), false],
-        [apiKey.replace('W', '☠️'), false],
-        [apiKey.substr(0, 31), false],
-        [`${apiKey}Z`, false]
-      ]
+				[apiKey, true],
+				[apiKey.toLowerCase(), false],
+				[apiKey.replace('W', '!'), false],
+				[apiKey.replace('W', '☠️'), false],
+				[apiKey.substr(0, 31), false],
+				[`${apiKey}Z`, false]
+			]
 
 			testCases.forEach(([input, expectation]) => {
 				it(`${input} is ${expectation ? 'valid' : 'invalid'}`, () => {
@@ -61,21 +60,15 @@ describe(`Api`, () => {
 
 	describe(`instance`, () => {
 		type CallDebug = { url: string; params: Record<string, string> }
-		const mockOrigin = 'http://localhost'
+		const mockOrigin = 'https://localhost'
 		let api: Api
 
 		beforeEach(() => {
-			// Origin set to localhost for safety, so unmocked requests don't leak out.
 			api = new Api(apiKey, { origin: mockOrigin })
-			fetchMock.resetMocks()
-			fetchMock.mockResponse(({ url }) =>
-				Promise.resolve(
-					JSON.stringify({
-						url,
-						params: parseParams(url),
-					})
-				)
-			)
+		})
+
+		afterEach(() => {
+			apiCalls.clear()
 		})
 
 		describe(`#call`, () => {
@@ -88,27 +81,30 @@ describe(`Api`, () => {
 
 			it(`uses a custom origin`, async () => {
 				expect(api.config.origin).toBe(mockOrigin)
-				const { url } = await api.call<CallDebug>('')
-
-				expect(url).toStartWith(mockOrigin)
 			})
 
 			it(`includes the API key query param`, async () => {
-				const { params } = await api.call<CallDebug>('')
-				expect(params.api_key).toBe(apiKey)
+				await api.call<CallDebug>('')
+				const apiKeyParam = apiCalls.last?.url.searchParams.get('api_key')
+
+				expect(apiKeyParam).toBe(apiKey)
 			})
 
 			it(`appends the path to the API origin`, async () => {
-				const { url } = await api.call<CallDebug>('/foo')
-				expect(url).toStartWith(`${mockOrigin}/foo`)
+				await api.call<CallDebug>('/foo')
+				const { href } = apiCalls.last?.url!
+
+				expect(href).toStartWith(`${mockOrigin}/foo`)
 			})
 
 			it(`appends query params`, async () => {
-				const { url } = await api.call<CallDebug>('/foo', {
+				await api.call<CallDebug>('/foo', {
 					params: { bar: ['foobar', 'bar'] },
 				})
-				expect(url).toEndWith(
-					'/foo?api_key=123456789ABCDEFGHIJKLMNOPQRSTUVW&bar=foobar&bar=bar'
+				const { search } = apiCalls.last?.url!
+
+				expect(search).toMatchInlineSnapshot(
+					`"?api_key=123456789ABCDEFGHIJKLMNOPQRSTUVW&bar=foobar&bar=bar"`
 				)
 			})
 		})
@@ -118,7 +114,7 @@ describe(`Api`, () => {
 
 			beforeEach(() => {
 				config = {
-					apiPath: '/',
+					apiPath: '/DEBUG',
 					timeUnit: TimeUnit.Day,
 					interval: { months: 1 },
 					dateRange: [startDate, endDate],
@@ -127,11 +123,8 @@ describe(`Api`, () => {
 			})
 
 			it(`returns a generator that calls the API`, async () => {
-				const generator = api.callGenerator<CallDebug>(config)
-				const { value } = await generator.next()
-
-				// @ts-ignore
-				expect('url' in value && value.url).toInclude(mockOrigin)
+				await api.callGenerator<CallDebug>(config).next()
+				expect(apiCalls.last?.url.origin).toEqual(mockOrigin)
 			})
 
 			it(`accepts a dateRange`, async () => {
@@ -143,13 +136,17 @@ describe(`Api`, () => {
 					interval,
 					parser,
 				})
-				const result = await generator.next()
 
+				const result = await generator.next()
 				expect(result.done).toBeFalse()
-				if (!result.done) {
-					expect(result.value.params.startDate).toBe('1999-01-01')
-					expect(result.value.params.endDate).toBe('1999-02-01')
-				}
+
+				const startDateParam = apiCalls.last?.url.searchParams.get('startDate')
+				const endDateParam = apiCalls.last?.url.searchParams.get('endDate')
+
+				expect({ startDateParam, endDateParam }).toEqual({
+					startDateParam: '1999-01-01',
+					endDateParam: '1999-02-01',
+				})
 			})
 
 			it(`accepts a timeRange`, async () => {
@@ -162,12 +159,15 @@ describe(`Api`, () => {
 					parser,
 				})
 				const result = await generator.next()
-
 				expect(result.done).toBeFalse()
-				if (!result.done) {
-					expect(result.value.params.startTime).toBe('1999-01-01 00:00:00')
-					expect(result.value.params.endTime).toBe('1999-02-01 00:00:00')
-				}
+
+				const startTimeParam = apiCalls.last?.url.searchParams.get('startTime')
+				const endTimeParam = apiCalls.last?.url.searchParams.get('endTime')
+
+				expect({ startTimeParam, endTimeParam }).toEqual({
+					startTimeParam: '1999-01-01 00:00:00',
+					endTimeParam: '1999-02-01 00:00:00',
+				})
 			})
 
 			it(`doesn't matter if dateRange or timeRange is reversed`, async () => {
@@ -180,57 +180,55 @@ describe(`Api`, () => {
 					parser,
 				})
 
-				const result = await generator.next()
+				await generator.next()
 
-				expect(result.done).toBeFalse()
-				if (!result.done) {
-					expect(result.value.params.startTime).toBe('1999-01-01 00:00:00')
-					expect(result.value.params.endTime).toBe('1999-02-01 00:00:00')
-				}
+				const startTimeParam = apiCalls.last?.url.searchParams.get('startTime')
+				const endTimeParam = apiCalls.last?.url.searchParams.get('endTime')
+
+				expect({ startTimeParam, endTimeParam }).toEqual({
+					startTimeParam: '1999-01-01 00:00:00',
+					endTimeParam: '1999-02-01 00:00:00',
+				})
 			})
 
 			it(`accepts an interval`, async () => {
-				const generator = api.callGenerator<CallDebug>(config)
-				const result = await generator.next()
-
-				expect(result.done).toBeFalse()
-				if (!result.done) {
-					expect(result.value.params.timeUnit).toBe('DAY')
-				}
+				await api.callGenerator<CallDebug>(config).next()
+				expect(apiCalls.last?.url.searchParams.get('timeUnit')).toBe('DAY')
 			})
 
 			it(`iterates by the specified interval`, async () => {
 				const generator = api.callGenerator<CallDebug>(config)
-				const first = await generator.next()
-				const second = await generator.next()
+				await generator.next()
+				expect(apiCalls.last?.url.searchParams.get('startDate')).toBe(
+					'1999-01-01'
+				)
+				expect(apiCalls.last?.url.searchParams.get('endDate')).toBe(
+					'1999-02-01'
+				)
 
-				if (first.done || second.done) {
-					expect(first.done).toBeFalse()
-					expect(second.done).toBeFalse()
-					return
-				}
-
-				expect(first.value.params.startDate).toBe('1999-01-01')
-				expect(first.value.params.endDate).toBe('1999-02-01')
-
-				expect(second.value.params.startDate).toBe('1999-02-01')
-				expect(second.value.params.endDate).toBe('1999-03-01')
+				await generator.next()
+				expect(apiCalls.last?.url.searchParams.get('startDate')).toBe(
+					'1999-02-01'
+				)
+				expect(apiCalls.last?.url.searchParams.get('endDate')).toBe(
+					'1999-03-01'
+				)
 			})
 
 			it(`interval doesn't exceed the specified range`, async () => {
 				config.interval = { years: 25 }
 
 				const generator = api.callGenerator<CallDebug>(config)
-				const first = await generator.next()
+				await generator.next()
+
+				expect(apiCalls.last?.url.searchParams.get('startDate')).toBe(
+					'1999-01-01'
+				)
+				expect(apiCalls.last?.url.searchParams.get('endDate')).toBe(
+					'2000-01-01'
+				)
+
 				const { done } = await generator.next()
-
-				if (first.done) {
-					expect(first.done).toBeFalse()
-					return
-				}
-
-				expect(first.value.params.startDate).toBe('1999-01-01')
-				expect(first.value.params.endDate).toBe('2000-01-01')
 				expect(done).toBeTrue()
 			})
 
@@ -247,6 +245,7 @@ describe(`Api`, () => {
 				}
 
 				expect(value).toEqual({
+					error: null,
 					config,
 					apiCallTotal: 12,
 					recordTotal: 144,

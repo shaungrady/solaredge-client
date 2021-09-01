@@ -1,0 +1,43 @@
+{
+	"sites": {
+		"count": 1,
+		"site": [
+			{
+				"id": 42,
+				"name": "Site Name",
+				"accountId": 9001,
+				"status": "Active",
+				"peakPower": 5.0,
+				"lastUpdateTime": "2021-08-31",
+				"installationDate": "2016-01-14",
+				"ptoDate": null,
+				"notes": "",
+				"type": "Optimizers & Inverters",
+				"location": {
+					"country": "United States",
+					"state": "New York",
+					"city": "New York",
+					"address": "129 W. 81st St, Apt. 5A",
+					"address2": "",
+					"zip": "10001",
+					"timeZone": "America/New_York",
+					"countryCode": "US",
+					"stateCode": "NY"
+				},
+				"primaryModule": {
+					"manufacturerName": "LG",
+					"modelName": "LG 300",
+					"maximumPower": 300.0
+				},
+				"uris": {
+					"DETAILS": "/site/42/details",
+					"DATA_PERIOD": "/site/42/dataPeriod",
+					"OVERVIEW": "/site/42/overview"
+				},
+				"publicSettings": {
+					"isPublic": false
+				}
+			}
+		]
+	}
+}

@@ -2,8 +2,8 @@
 	"**/*.{json,md}": "prettier --write",
 	"scripts/**/*.{js,ts}": "prettier --write",
 	"src/**/*.{ts,js}": [
-		"npm run lint -- --fix --cache",
+		"yarn run lint --fix --cache",
 		"prettier --write",
-		"npm run test -- --bail --findRelatedTests"
+		"yarn run test --bail --findRelatedTests"
 	]
 }

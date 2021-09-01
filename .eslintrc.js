@@ -4,7 +4,13 @@ module.exports = {
 	parserOptions: {
 		project: './tsconfig.eslint.json',
 	},
-	ignorePatterns: ['**/*.spec.*', '**/*.mock.*', '**/test/'],
+	ignorePatterns: [
+		'**/*.spec.*',
+		'**/*.mock.*',
+		'**/test/',
+		'**/mocks/',
+		'*.js',
+	],
 	plugins: ['@typescript-eslint'],
 	extends: [
 		'eslint:recommended',
@@ -17,11 +23,7 @@ module.exports = {
 		'no-restricted-syntax': 'off',
 		'@typescript-eslint/member-delimiter-style': [
 			'error',
-			{
-				multiline: {
-					delimiter: 'none',
-				},
-			},
+			{ multiline: { delimiter: 'none' } },
 		],
 	},
 }

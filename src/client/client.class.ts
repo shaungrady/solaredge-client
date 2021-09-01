@@ -1,6 +1,7 @@
 import Api from '../api/api.class'
 import {
 	ApiCallGenerator,
+	ApiResponse,
 	DateRange,
 	DateTimeRange,
 	TimeUnit,
@@ -8,14 +9,14 @@ import {
 } from '../api/api.types'
 import {
 	AccountSites,
-	EquipmentChange,
 	EquipmentChangeLog,
 	InverterData,
 	InverterTelemetry,
+	SiteComponentsList,
 	SiteDataPeriod,
 	SiteDetails,
 	SiteEnvironmentalBenefits,
-	SiteEquipmentList,
+	SiteInventory,
 	SiteMeasurement,
 	SiteMeasurements,
 	SitesParams,
@@ -23,6 +24,8 @@ import {
 } from './client.types'
 
 export default class Client {
+	static readonly isValidApiKey = Api.isValidApiKey
+
 	private readonly api: Api
 
 	constructor({ apiKey, apiOrigin }: SolaredgeClientOptions) {
@@ -37,30 +40,33 @@ export default class Client {
 	 * Returns a list of sites related to the given token, which is the account api key.
 	 * This API accepts parameters for convenient search, sort and pagination.
 	 */
-	async fetchSiteList(params: SitesParams = {}): Promise<SiteDetails[]> {
-		const data = await this.api.call<AccountSites>('/sites/list', { params })
-		return data.site
+	async siteList(params: SitesParams = {}): Promise<ApiResponse<AccountSites>> {
+		return this.api.call<AccountSites>('/sites/list', { params })
 	}
 
 	// ***************************************************************************
 	//    SITE-RELATED METHODS
 	// ***************************************************************************
 
-	async fetchSiteDetails(siteId: string): Promise<SiteDetails> {
+	async siteDetails(
+		siteId: string | number
+	): Promise<ApiResponse<SiteDetails>> {
 		return this.api.call<SiteDetails>(`/site/${siteId}/details`)
 	}
 
 	/**
 	 * Return the energy production start and end dates of the site.
 	 */
-	async fetchSiteDataPeriod(siteId: string): Promise<SiteDataPeriod> {
+	async siteDataPeriod(
+		siteId: string | number
+	): Promise<ApiResponse<SiteDataPeriod>> {
 		return this.api.call<SiteDataPeriod>(`/site/${siteId}/dataPeriod`)
 	}
 
 	// Return an async generator for the site energy measurements (in watt-hours).
 	// Default timeUnit: `TimeUnit.Day`
-	fetchSiteEnergyGenerator(
-		siteId: string,
+	siteEnergy(
+		siteId: string | number,
 		options: DateRange & Partial<TimeUnitParam>
 	): ApiCallGenerator<SiteMeasurement> {
 		const { timeUnit = TimeUnit.Day, dateRange } = options
@@ -89,8 +95,8 @@ export default class Client {
 	}
 
 	// Return an async generator for the site power measurements in 15 minutes resolution (in watts).
-	fetchSitePowerGenerator(
-		siteId: string,
+	sitePower(
+		siteId: string | number,
 		options: DateTimeRange
 	): ApiCallGenerator<SiteMeasurement> {
 		// Usage limitation: This API is limited to one-month period. This means that the period between endTime and startTime
@@ -108,22 +114,26 @@ export default class Client {
 	// Retrieves the current power flow between all elements of the site including PV array, storage (battery), loads
 	// (consumption) and grid.
 	// Note: Applies when export, import, and consumption can be measured.
-	async fetchSiteCurrentPowerFlow(siteId: string): Promise<unknown> {
+	async siteCurrentPowerFlow(
+		siteId: string | number
+	): Promise<ApiResponse<unknown>> {
 		// TODO: Write return interface
 		return this.api.call(`/site/${siteId}/currentPowerFlow`)
 	}
 
 	// Get detailed storage information from batteries: the state of energy, power and lifetime energy.
 	// Note: Applicable to systems with batteries.
-	async fetchSiteStorageData(siteId: string): Promise<unknown> {
+	async siteStorageData(
+		siteId: string | number
+	): Promise<ApiResponse<unknown>> {
 		// TODO: Write return interface
 		return this.api.call(`/site/${siteId}/storageData`)
 	}
 
-	async fetchSiteEnvironmentalBenefits(
-		siteId: string,
+	async siteEnvironmentalBenefits(
+		siteId: string | number,
 		metricUnits = false
-	): Promise<SiteEnvironmentalBenefits> {
+	): Promise<ApiResponse<SiteEnvironmentalBenefits>> {
 		const params = {
 			systemUnits: metricUnits ? 'Metric' : 'Imperial',
 		}
@@ -133,22 +143,29 @@ export default class Client {
 		)
 	}
 
-	async fetchSiteEquipmentList(siteId: string): Promise<SiteEquipmentList> {
+	async siteComponentsList(
+		siteId: string | number
+	): Promise<ApiResponse<SiteComponentsList>> {
 		return this.api.call(`/equipment/${siteId}/list`)
 	}
 
-	async fetchSiteEquipmentChangeLog(
-		siteId: string,
-		equipmentId: string
-	): Promise<EquipmentChange[]> {
-		const data = await this.api.call<EquipmentChangeLog>(
-			`/equipment/${siteId}/${equipmentId}/changeLog`
-		)
-		return data.list
+	async siteInventory(
+		siteId: string | number
+	): Promise<ApiResponse<SiteInventory>> {
+		return this.api.call(`/equipment/${siteId}/list`)
 	}
 
-	fetchInverterTelemetryGenerator(
-		siteId: string,
+	async siteEquipmentChangeLog(
+		siteId: string | number,
+		equipmentId: string
+	): Promise<ApiResponse<EquipmentChangeLog>> {
+		return this.api.call<EquipmentChangeLog>(
+			`/equipment/${siteId}/${equipmentId}/changeLog`
+		)
+	}
+
+	inverterTechnicalData(
+		siteId: string | number,
 		inverterId: string,
 		options: DateTimeRange
 	): ApiCallGenerator<InverterTelemetry> {

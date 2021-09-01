@@ -20,5 +20,5 @@
 		"importHelpers": true
 	},
 	"include": ["./src"],
-	"exclude": ["**/*.spec.*", "**/*.mock.*", "**/test/"]
+	"exclude": ["**/*.spec.*", "**/*.mock.*", "**/test/", "**/mocks/"]
 }

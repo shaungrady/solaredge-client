@@ -6,6 +6,11 @@ export interface ApiConfig {
 	origin: string
 }
 
+export interface ApiResponse<T> {
+	error: string | null
+	data: T | null
+}
+
 export interface DateRange {
 	dateRange: [Date, Date]
 }
@@ -98,6 +103,7 @@ export interface ApiCallGeneratorReturn {
 	config: ApiCallGeneratorConfig<unknown>
 	apiCallTotal: number
 	recordTotal: number
+	error: string | null
 }
 
 export interface Range {

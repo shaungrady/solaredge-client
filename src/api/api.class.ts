@@ -1,5 +1,6 @@
 import { add, isBefore, lightFormat, min } from 'date-fns'
 import queryString from 'query-string'
+import fetch from 'cross-fetch'
 import compareDates from '../shared/compare-dates.fn'
 import Err from '../shared/errors.enum'
 import { Subset } from '../shared/types'
@@ -14,6 +15,7 @@ import {
 	Serialized,
 	ApiCallOptions,
 	ApiCallGeneratorReturn,
+	ApiResponse,
 } from './api.types'
 
 export default class Api {
@@ -71,22 +73,24 @@ export default class Api {
 
 	readonly config: Readonly<ApiConfig>
 
-	constructor(public readonly key: string, config: Partial<ApiConfig> = {}) {
+	constructor(
+		public readonly key: string,
+		{ origin }: Partial<ApiConfig> = {}
+	) {
 		if (!Api.isValidApiKey(key)) {
 			throw Error(Err.invalidApiKey)
 		}
 
 		this.config = Object.freeze({
-			origin: Api.defaultOrigin,
-			...config,
+			origin: origin ?? Api.defaultOrigin,
 		})
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	async call<T>(
+	async call<T = any>(
 		path: string,
 		options: Partial<ApiCallOptions> = {}
-	): Promise<T> {
+	): Promise<ApiResponse<T>> {
 		const { key, config } = this
 		const callConfig: ApiCallOptions = {
 			params: {},
@@ -103,10 +107,16 @@ export default class Api {
 		const res = await fetch(url, { headers })
 		const body = await res.json()
 
-		// Solaredge nests response data under a key that changes depending on the
-		// request endpoint; this removes that nesting for ease of use.
-		const bodyValues = Object.values(body)
-		return bodyValues.length === 1 ? bodyValues[0] : body
+		if ('String' in body) {
+			return { error: body.String, data: null }
+		}
+
+		// SolarEdge nests response data under a key that changes depending on the
+		// request endpoint; this removes that nesting for ease of consumption.
+		const bodyValues: T[] = Object.values(body)
+		const data = bodyValues.length === 1 ? bodyValues[0] : body
+
+		return { error: null, data }
 	}
 
 	async *callGenerator<T>(
@@ -115,6 +125,7 @@ export default class Api {
 		const { apiPath, interval, parser } = config
 		const call = this.call.bind(this)
 		const generatorReturnData: ApiCallGeneratorReturn = {
+			error: null,
 			config,
 			apiCallTotal: 0,
 			recordTotal: 0,
@@ -137,18 +148,23 @@ export default class Api {
 			// Since the monitoring API limits the number of API calls in a given time
 			// period, we won't call the API until it's needed.
 			// eslint-disable-next-line no-await-in-loop
-			const callData = await call(apiPath, {
+			const { data, error } = await call(apiPath, {
 				params: {
 					...rangeParams,
 					...timeUnitParam,
 				},
 			})
 
-			const collection = parser(callData)
+			if (error) {
+				generatorReturnData.error = error
+				break
+			}
 
-			for (const data of collection) {
+			const collection = parser(data)
+
+			for (const record of collection) {
 				generatorReturnData.recordTotal += 1
-				yield data
+				yield record
 			}
 
 			generatorReturnData.apiCallTotal += 1

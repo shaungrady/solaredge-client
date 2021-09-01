@@ -1,12 +1,11 @@
-process.env.TZ = 'GMT'
+process.env.TZ = 'UTC'
 
 module.exports = {
 	preset: 'ts-jest',
 	globals: {
-		'ts-jest': { tsconfig: 'tsconfig.spec.json' },
+		'ts-jest': { tsconfig: './tsconfig.spec.json' },
 	},
-	setupFiles: ['./jest.setup.js'],
-	setupFilesAfterEnv: ['jest-extended'],
+	setupFilesAfterEnv: ['jest-extended', './jest.setup.js'],
 	testEnvironment: 'node',
 
 	collectCoverageFrom: [
