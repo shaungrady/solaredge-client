@@ -52,7 +52,7 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
-          coverageCommand: npm run ci:test
+          coverageCommand: yarn run ci:test
           coverageLocations: |
             ${{github.workspace}}/coverage/lcov.info:lcov
 
