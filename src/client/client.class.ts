@@ -143,19 +143,19 @@ export default class Client {
 		)
 	}
 
-	async siteComponentsList(
+	async componentsList(
 		siteId: string | number
 	): Promise<ApiResponse<SiteComponentsList>> {
 		return this.api.call(`/equipment/${siteId}/list`)
 	}
 
-	async siteInventory(
+	async inventory(
 		siteId: string | number
 	): Promise<ApiResponse<SiteInventory>> {
-		return this.api.call(`/equipment/${siteId}/list`)
+		return this.api.call(`/site/${siteId}/inventory`)
 	}
 
-	async siteEquipmentChangeLog(
+	async equipmentChangeLog(
 		siteId: string | number,
 		equipmentId: string
 	): Promise<ApiResponse<EquipmentChangeLog>> {

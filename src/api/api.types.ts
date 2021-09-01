@@ -14,6 +14,7 @@ export interface ApiResponse<T> {
 export interface DateRange {
 	dateRange: [Date, Date]
 }
+
 export interface DateRangeParams {
 	startDate: Date
 	endDate: Date
@@ -22,6 +23,7 @@ export interface DateRangeParams {
 export interface DateTimeRange {
 	timeRange: [Date, Date]
 }
+
 export interface DateTimeRangeParams {
 	startTime: Date
 	endTime: Date
@@ -37,9 +39,7 @@ export interface TimeUnitParam {
 export type Serialized<T> = T extends Date
 	? string // eslint-disable-next-line @typescript-eslint/ban-types
 	: T extends object
-	? {
-			[k in keyof T]: Serialized<T[k]>
-	  }
+	? { [k in keyof T]: Serialized<T[k]> }
 	: T
 
 export const enum TimeUnit {
@@ -99,6 +99,7 @@ export type ApiCallGenerator<T> = AsyncGenerator<
 	ApiCallGeneratorReturn,
 	void
 >
+
 export interface ApiCallGeneratorReturn {
 	config: ApiCallGeneratorConfig<unknown>
 	apiCallTotal: number

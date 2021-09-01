@@ -173,14 +173,14 @@ describe(`Client`, () => {
 		})
 
 		it(`#siteEquipmentList calls the correct path`, async () => {
-			await client.siteComponentsList('42')
+			await client.componentsList('42')
 			expect(apiCalls.last?.url.pathname).toMatchInlineSnapshot(
 				`"/equipment/42/list"`
 			)
 		})
 
 		it(`#siteEquipmentChangeLog calls the correct path`, async () => {
-			await client.siteEquipmentChangeLog('42', '24')
+			await client.equipmentChangeLog('42', '24')
 			expect(apiCalls.last?.url.pathname).toMatchInlineSnapshot(
 				`"/equipment/42/24/changeLog"`
 			)

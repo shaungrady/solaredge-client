@@ -150,10 +150,7 @@ export default class Api {
 			// period, we won't call the API until it's needed.
 			// eslint-disable-next-line no-await-in-loop
 			const { data, error } = await call(apiPath, {
-				params: {
-					...rangeParams,
-					...timeUnitParam,
-				},
+				params: { ...rangeParams, ...timeUnitParam },
 			})
 
 			if (error) {
