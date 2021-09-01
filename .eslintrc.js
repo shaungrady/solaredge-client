@@ -11,8 +11,9 @@ module.exports = {
 		'**/mocks/',
 		'*.js',
 	],
-	plugins: ['@typescript-eslint'],
+	plugins: ['@typescript-eslint', 'import'],
 	extends: [
+
 		'eslint:recommended',
 		'airbnb-typescript/base',
 		'plugin:@typescript-eslint/eslint-recommended',
