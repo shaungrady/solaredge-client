@@ -48,6 +48,8 @@ jobs:
         run: yarn install
 
       - name: Test and report coverage
+        # Dependabot does not have access to secrets
+        if: github.actor != 'dependabot[bot]'
         uses: paambaati/codeclimate-action@v2.7.5
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
@@ -55,6 +57,10 @@ jobs:
           coverageCommand: yarn run ci:test
           coverageLocations: |
             ${{github.workspace}}/coverage/lcov.info:lcov
+
+      - name: Test
+        if: github.actor == 'dependabot[bot]'
+        run: yarn run ci:test
 
   build:
     name: Build
