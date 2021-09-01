@@ -1,21 +1,22 @@
+import fetch from 'cross-fetch'
 import { add, isBefore, lightFormat, min } from 'date-fns'
 import queryString from 'query-string'
-import fetch from 'cross-fetch'
+
 import compareDates from '../shared/compare-dates.fn'
 import Err from '../shared/errors.enum'
 import { Subset } from '../shared/types'
 import {
 	ApiCallGenerator,
+	ApiCallGeneratorConfig,
+	ApiCallGeneratorReturn,
+	ApiCallOptions,
 	ApiConfig,
+	ApiResponse,
 	DateOrTimeRange,
 	DateOrTimeRangeParams,
-	ApiCallGeneratorConfig,
 	Range,
 	RangeType,
 	Serialized,
-	ApiCallOptions,
-	ApiCallGeneratorReturn,
-	ApiResponse,
 } from './api.types'
 
 export default class Api {

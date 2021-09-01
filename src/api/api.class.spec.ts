@@ -1,4 +1,5 @@
 import { parseISO } from 'date-fns'
+
 import { apiCalls } from '../mocks/handlers'
 import Err from '../shared/errors.enum'
 import Api from './api.class'

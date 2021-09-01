@@ -1,8 +1,9 @@
-import { DefaultRequestBody, RequestParams, rest, RestRequest } from 'msw'
-import sitesList from './responses/sitesList.json'
+import { DefaultRequestBody, RequestParams, RestRequest, rest } from 'msw'
+
+import inverterTechnicalData from './responses/inverterTechnicalData.json'
 import siteEnergy from './responses/siteEnergy.json'
 import sitePower from './responses/sitePower.json'
-import inverterTechnicalData from './responses/inverterTechnicalData.json'
+import sitesList from './responses/sitesList.json'
 
 export const apiCalls = {
 	callsSet: new Set<RestRequest<DefaultRequestBody, RequestParams>>(),
