@@ -6,10 +6,17 @@ export interface ApiConfig {
 	origin: string
 }
 
-export interface ApiResponse<T> {
-	error: string | null
-	data: T | null
+export interface ApiSuccessResponse<T> {
+	error: null
+	data: T
 }
+
+export interface ApiErrorResponse {
+	error: string
+	data: null
+}
+
+export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse
 
 export interface DateRange {
 	dateRange: [Date, Date]
