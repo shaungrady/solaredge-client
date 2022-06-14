@@ -47,7 +47,7 @@
 		"eslint-config-airbnb-typescript": "^14.0.2",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-import": "^2.26.0",
-		"husky": "^7.0.4",
+		"husky": "^8.0.1",
 		"import-sort-style-module": "^6.0.0",
 		"jest": "^27.5.1",
 		"jest-extended": "^0.11.5",
