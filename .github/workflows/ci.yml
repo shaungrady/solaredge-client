@@ -50,7 +50,7 @@ jobs:
       - name: Test and report coverage
         # Dependabot does not have access to secrets
         if: github.actor != 'dependabot[bot]'
-        uses: paambaati/codeclimate-action@v3.0.0
+        uses: paambaati/codeclimate-action@v3.2.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
