@@ -51,7 +51,7 @@
 		"import-sort-style-module": "^6.0.0",
 		"jest": "^27.5.1",
 		"jest-extended": "^0.11.5",
-		"lint-staged": "^12.3.4",
+		"lint-staged": "^13.0.4",
 		"msw": "^0.35.0",
 		"prettier": "^2.7.0",
 		"prettier-plugin-import-sort": "^0.0.7",
